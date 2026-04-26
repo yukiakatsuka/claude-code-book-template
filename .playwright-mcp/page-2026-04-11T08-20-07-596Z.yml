@@ -1,0 +1,8 @@
+- generic [active] [ref=e1]:
+  - heading "ブロック崩し" [level=1] [ref=e2]
+  - generic [ref=e3]:
+    - generic [ref=e4]: "スコア: 0"
+    - generic [ref=e5]: "残機: 3"
+    - generic [ref=e6]: "レベル: 1"
+  - generic [ref=e8]: スタートボタンを押してください
+  - button "リスタート" [ref=e9] [cursor=pointer]

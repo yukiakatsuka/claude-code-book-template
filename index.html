@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブロック崩し</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: #eee;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+      color: #e94560;
+    }
+
+    #ui {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    #ui span {
+      color: #a8dadc;
+    }
+
+    canvas {
+      display: block;
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 4px;
+      box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+    }
+
+    #message {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      height: 1.5em;
+      color: #e94560;
+      letter-spacing: 2px;
+    }
+
+    #start-btn {
+      margin-top: 14px;
+      padding: 10px 32px;
+      font-size: 1rem;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      transition: background 0.2s;
+    }
+
+    #start-btn:hover {
+      background: #c73652;
+    }
+  </style>
+</head>
+<body>
+  <h1>ブロック崩し</h1>
+  <div id="ui">
+    <div>スコア: <span id="score">0</span></div>
+    <div>残機: <span id="lives">3</span></div>
+    <div>レベル: <span id="level">1</span></div>
+  </div>
+  <canvas id="canvas" width="480" height="520"></canvas>
+  <div id="message"></div>
+  <button id="start-btn">スタート</button>
+
+  <script src="main.js"></script>
+</body>
+</html>
