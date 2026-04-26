@@ -1,7 +1,7 @@
 const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
 const FEEDS = [
-  { name: 'NHK経済', url: 'https://www3.nhk.or.jp/rss/news/cat6.xml', color: '#0066cc', noFilter: true },
+  { name: 'NHK経済', url: 'https://www.nhk.or.jp/rss/news/cat6.xml', color: '#0066cc', noFilter: true },
   { name: 'NHKビジネス', url: 'https://www.nhk.or.jp/rss/news/cat5.xml', color: '#2ecc71', noFilter: true },
   { name: 'NHK政治', url: 'https://www.nhk.or.jp/rss/news/cat4.xml', color: '#cc0033' },
   { name: 'NHK主要', url: 'https://www.nhk.or.jp/rss/news/cat0.xml', color: '#555' },
