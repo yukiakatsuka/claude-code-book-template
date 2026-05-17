@@ -802,40 +802,75 @@
       margin-top: 18px;
     }
 
-    /* ─── マイクロインタラクション ─── */
+    /* ─── マイクロインタラクション（iPhone専用） ─── */
 
-    /* タップ押下フィードバック */
-    .level-card:active     { transform: scale(0.93); }
-    .cat-chip:active       { transform: scale(0.93); }
-    .btn-start-main:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(45,91,219,0.25); }
-    .btn-start-sub:active  { transform: scale(0.97); }
-    .choice-btn:active:not(:disabled) { transform: scale(0.98); }
+    /* JS経由 touchstart 即時フィードバック */
+    .touch-pressing {
+      transform: scale(0.93) !important;
+      transition: transform 0.06s ease !important;
+    }
+    .choice-btn.touch-pressing {
+      transform: scale(0.96) !important;
+      background: #edf1ff !important;
+      border-color: #aabff8 !important;
+      transition: transform 0.06s ease, background 0.06s ease, border-color 0.06s ease !important;
+    }
+    .dont-know-btn.touch-pressing {
+      transform: scale(0.96) !important;
+      background: #fff3cd !important;
+      transition: transform 0.06s ease, background 0.06s ease !important;
+    }
+    .btn-start-main.touch-pressing {
+      transform: scale(0.96) !important;
+      box-shadow: 0 2px 8px rgba(45,91,219,0.2) !important;
+      transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    }
 
-    /* 選択肢ボタン：正解ポップ */
+    /* 選択肢ボタン：正解 - スプリングバウンス + グリーングロー */
     @keyframes choiceCorrect {
-      0%   { transform: scale(1); }
-      40%  { transform: scale(1.04); }
-      70%  { transform: scale(0.98); }
+      0%   { transform: scale(0.96); }
+      48%  { transform: scale(1.07); }
+      74%  { transform: scale(0.985); }
       100% { transform: scale(1); }
     }
-    /* 選択肢ボタン：不正解シェイク */
-    @keyframes choiceWrong {
-      0%, 100% { transform: translateX(0); }
-      20%       { transform: translateX(-7px); }
-      40%       { transform: translateX(6px); }
-      60%       { transform: translateX(-5px); }
-      80%       { transform: translateX(4px); }
+    @keyframes correctGlow {
+      0%   { box-shadow: 0 0 0 0 rgba(31,157,85,0.55); }
+      60%  { box-shadow: 0 0 0 18px rgba(31,157,85,0); }
+      100% { box-shadow: none; }
     }
-    .choice-btn.correct { animation: choiceCorrect 0.35s ease forwards; }
-    .choice-btn.wrong   { animation: choiceWrong 0.4s ease forwards; }
+    .choice-btn.correct {
+      animation: choiceCorrect 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards,
+                 correctGlow 0.52s ease forwards;
+    }
 
-    /* スコアバッジのパルス */
+    /* 選択肢ボタン：不正解 - 強めのシェイク + レッドグロー */
+    @keyframes choiceWrong {
+      0%   { transform: scale(0.97) translateX(0); }
+      12%  { transform: scale(0.97) translateX(-12px); }
+      28%  { transform: translateX(10px); }
+      44%  { transform: translateX(-8px); }
+      60%  { transform: translateX(6px); }
+      76%  { transform: translateX(-3px); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    @keyframes wrongGlow {
+      0%   { box-shadow: 0 0 0 0 rgba(214,69,69,0.55); }
+      60%  { box-shadow: 0 0 0 18px rgba(214,69,69,0); }
+      100% { box-shadow: none; }
+    }
+    .choice-btn.wrong {
+      animation: choiceWrong 0.52s ease forwards,
+                 wrongGlow 0.52s ease forwards;
+    }
+
+    /* スコアバッジ：スプリングパルス */
     @keyframes scorePulse {
       0%   { transform: scale(1); }
-      50%  { transform: scale(1.18); }
+      40%  { transform: scale(1.3); }
+      70%  { transform: scale(0.94); }
       100% { transform: scale(1); }
     }
-    .score-pulse { animation: scorePulse 0.3s ease; }
+    .score-pulse { animation: scorePulse 0.42s cubic-bezier(0.34,1.56,0.64,1); }
 
     /* 画面切替のスライドイン */
     @keyframes slideUp {
@@ -843,6 +878,23 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     .slide-up { animation: slideUp 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+
+    /* 覚えたボタン：緑スプリング + グロー */
+    @keyframes btnKnown {
+      0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(31,157,85,0.55); }
+      30%  { transform: scale(0.92); }
+      65%  { transform: scale(1.08); box-shadow: 0 0 0 16px rgba(31,157,85,0); }
+      100% { transform: scale(1);    box-shadow: none; }
+    }
+    /* あいまいボタン：橙スプリング + グロー */
+    @keyframes btnWeak {
+      0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(180,120,0,0.5); }
+      30%  { transform: scale(0.92); }
+      65%  { transform: scale(1.08); box-shadow: 0 0 0 16px rgba(180,120,0,0); }
+      100% { transform: scale(1);    box-shadow: none; }
+    }
+    .btn-flash-known { animation: btnKnown 0.42s cubic-bezier(0.34,1.56,0.64,1); }
+    .btn-flash-weak  { animation: btnWeak  0.42s cubic-bezier(0.34,1.56,0.64,1); }
 
     /* ─── 暗記カード 3D フリップ ─── */
     .flashcard-scene {
@@ -895,14 +947,6 @@
     }
     .flashcard-scene.slide-right .flashcard-inner { animation: cardSlideInRight 0.28s cubic-bezier(0.22,1,0.36,1) both; }
     .flashcard-scene.slide-left  .flashcard-inner { animation: cardSlideInLeft  0.28s cubic-bezier(0.22,1,0.36,1) both; }
-
-    /* 暗記カード：覚えた・あいまいボタンのフィードバック */
-    @keyframes btnFlash {
-      0%   { filter: brightness(1); }
-      40%  { filter: brightness(1.25); }
-      100% { filter: brightness(1); }
-    }
-    .btn-flash { animation: btnFlash 0.3s ease; }
 
     @media (display-mode: standalone) {
       body { user-select: none; }
@@ -1949,6 +1993,7 @@
         }
 
         btn.addEventListener("click", () => handleChoiceClick(index));
+        if (!judgedQuestions[currentQuestionIndex]) addTouchPress(btn, "touch-pressing");
         choicesArea.appendChild(btn);
       });
 
@@ -1976,6 +2021,7 @@
       const btns = choicesArea.querySelectorAll(".choice-btn");
       btns.forEach((btn, i) => {
         btn.disabled = true;
+        btn.classList.remove("touch-pressing");
         if (i === q.answer) btn.classList.add("correct");
         if (i === index && !isCorrect) btn.classList.add("wrong");
       });
@@ -2249,27 +2295,46 @@
 
     flashcard.addEventListener("click", flipFlashcard);
     flashcard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flipFlashcard(); } });
+    addTouchPress(flashcard);
     flashFlipBtn.addEventListener("click", flipFlashcard);
     flashPrevBtn.addEventListener("click", goPrevFlashcard);
     flashNextBtn.addEventListener("click", goNextFlashcard);
     flashBackBtn.addEventListener("click", returnToSetup);
 
-    function flashBtnFeedback(btn) {
-      btn.classList.remove("btn-flash");
+    // touchstart → 即時押し込みフィードバック（iPhoneのclick遅延を回避）
+    function addTouchPress(el, pressClass = "touch-pressing") {
+      el.addEventListener("touchstart", () => el.classList.add(pressClass), { passive: true });
+      ["touchend", "touchcancel"].forEach(ev =>
+        el.addEventListener(ev, () => requestAnimationFrame(() => el.classList.remove(pressClass)), { passive: true })
+      );
+    }
+
+    // 静的ボタンにタッチフィードバック適用
+    [startBtn, startReviewBtn, startFlashBtn, startWeakFlashBtn,
+     retrySameBtn, reviewWrongBtn, returnSetupBtn, backToSetupBtn,
+     nextBtn, prevBtn, dontKnowBtn, flashFlipBtn, flashPrevBtn,
+     flashNextBtn, flashBackBtn, quizModeTab, flashModeTab].forEach(el => {
+      if (el) addTouchPress(el);
+    });
+    addTouchPress(startBtn, "touch-pressing btn-start-main-pressing");
+
+    function flashBtnFeedback(btn, type = "known") {
+      const cls = type === "known" ? "btn-flash-known" : "btn-flash-weak";
+      btn.classList.remove("btn-flash-known", "btn-flash-weak");
       void btn.offsetWidth;
-      btn.classList.add("btn-flash");
-      btn.addEventListener("animationend", () => btn.classList.remove("btn-flash"), { once: true });
+      btn.classList.add(cls);
+      btn.addEventListener("animationend", () => btn.classList.remove(cls), { once: true });
     }
 
     markKnownBtn.addEventListener("click", () => {
-      flashBtnFeedback(markKnownBtn);
+      flashBtnFeedback(markKnownBtn, "known");
       const card = flashcards[currentFlashIndex];
       markFlashKnown(card.id);
       goToNextIfPossible();
     });
 
     markWeakBtn.addEventListener("click", () => {
-      flashBtnFeedback(markWeakBtn);
+      flashBtnFeedback(markWeakBtn, "weak");
       const card = flashcards[currentFlashIndex];
       markFlashWeak(card.id);
       goToNextIfPossible();
