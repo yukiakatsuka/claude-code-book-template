@@ -1,4 +1,4 @@
-const CACHE_NAME = "it-passport-quiz-cache-v2";
+const CACHE_NAME = "it-passport-quiz-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -32,17 +32,14 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request).then((response) => {
-          const copied = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, copied);
-          });
-          return response;
-        }).catch(() => caches.match("./index.html"))
-      );
-    })
+    fetch(event.request)
+      .then((response) => {
+        const copied = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, copied);
+        });
+        return response;
+      })
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
   );
 });
