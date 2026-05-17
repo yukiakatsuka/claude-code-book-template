@@ -948,6 +948,46 @@
     .flashcard-scene.slide-right .flashcard-inner { animation: cardSlideInRight 0.28s cubic-bezier(0.22,1,0.36,1) both; }
     .flashcard-scene.slide-left  .flashcard-inner { animation: cardSlideInLeft  0.28s cubic-bezier(0.22,1,0.36,1) both; }
 
+    /* ─── リップルエフェクト ─── */
+    .ripple-host { position: relative; overflow: hidden; }
+    .ripple-wave {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      animation: rippleAnim 0.55s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+    }
+    @keyframes rippleAnim {
+      to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+
+    /* タッチ離し後のスプリングバウンス */
+    @keyframes springRelease {
+      0%   { transform: scale(0.93); }
+      52%  { transform: scale(1.07); }
+      78%  { transform: scale(0.99); }
+      100% { transform: scale(1); }
+    }
+    .spring-releasing { animation: springRelease 0.36s cubic-bezier(0.34,1.56,0.64,1); }
+
+    /* レベルカード選択スプリング */
+    @keyframes levelCardSelect {
+      0%   { transform: scale(0.9); }
+      55%  { transform: scale(1.1); }
+      80%  { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+    .level-card.selecting { animation: levelCardSelect 0.38s cubic-bezier(0.34,1.56,0.64,1); }
+
+    /* カテゴリチップ トグルスプリング */
+    @keyframes chipToggle {
+      0%   { transform: scale(0.84); }
+      55%  { transform: scale(1.12); }
+      80%  { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+    .cat-chip.toggling { animation: chipToggle 0.32s cubic-bezier(0.34,1.56,0.64,1); }
+
     @media (display-mode: standalone) {
       body { user-select: none; }
     }
@@ -2301,7 +2341,9 @@
     flashNextBtn.addEventListener("click", goNextFlashcard);
     flashBackBtn.addEventListener("click", returnToSetup);
 
-    // touchstart → 即時押し込みフィードバック（iPhoneのclick遅延を回避）
+    // ── タッチフィードバック ユーティリティ ──
+
+    // 基本：押し込みのみ（自前のリリースアニメがあるボタン向け）
     function addTouchPress(el, pressClass = "touch-pressing") {
       el.addEventListener("touchstart", () => el.classList.add(pressClass), { passive: true });
       ["touchend", "touchcancel"].forEach(ev =>
@@ -2309,14 +2351,57 @@
       );
     }
 
-    // 静的ボタンにタッチフィードバック適用
-    [startBtn, startReviewBtn, startFlashBtn, startWeakFlashBtn,
-     retrySameBtn, reviewWrongBtn, returnSetupBtn, backToSetupBtn,
-     nextBtn, prevBtn, dontKnowBtn, flashFlipBtn, flashPrevBtn,
-     flashNextBtn, flashBackBtn, quizModeTab, flashModeTab].forEach(el => {
-      if (el) addTouchPress(el);
+    // スプリングプレス：押し込み → 離したときスプリングバウンス
+    function addSpringPress(el, pressClass = "touch-pressing") {
+      el.addEventListener("touchstart", () => {
+        el.classList.remove("spring-releasing");
+        el.classList.add(pressClass);
+      }, { passive: true });
+      el.addEventListener("touchend", () => {
+        el.classList.remove(pressClass);
+        requestAnimationFrame(() => {
+          el.classList.add("spring-releasing");
+          el.addEventListener("animationend", () => el.classList.remove("spring-releasing"), { once: true });
+        });
+      }, { passive: true });
+      el.addEventListener("touchcancel", () => el.classList.remove(pressClass, "spring-releasing"), { passive: true });
+    }
+
+    // リップルエフェクト
+    function addRipple(el, darkBg = false) {
+      el.classList.add("ripple-host");
+      el.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        const rect = el.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2.4;
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        const wave = document.createElement("span");
+        wave.className = "ripple-wave";
+        wave.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${darkBg ? "rgba(255,255,255,0.28)" : "rgba(45,91,219,0.12)"};`;
+        el.appendChild(wave);
+        wave.addEventListener("animationend", () => wave.remove(), { once: true });
+      }, { passive: true });
+    }
+
+    // 青/暗色背景ボタン：白リップル + スプリングプレス
+    [startBtn, startFlashBtn, retrySameBtn].forEach(el => {
+      if (el) { addSpringPress(el); addRipple(el, true); }
     });
-    addTouchPress(startBtn, "touch-pressing btn-start-main-pressing");
+    // 赤背景ボタン：白リップル + スプリングプレス
+    [backToSetupBtn, flashBackBtn].forEach(el => {
+      if (el) { addSpringPress(el); addRipple(el, true); }
+    });
+    // 淡色/白背景ボタン：青リップル + スプリングプレス
+    [startReviewBtn, startWeakFlashBtn, reviewWrongBtn, returnSetupBtn,
+     nextBtn, prevBtn, dontKnowBtn, flashFlipBtn, flashPrevBtn,
+     flashNextBtn, quizModeTab, flashModeTab].forEach(el => {
+      if (el) { addSpringPress(el); addRipple(el, false); }
+    });
+    // 覚えた・あいまい：自前スプリングアニメあり → 押し込み + 白リップル
+    [markKnownBtn, markWeakBtn].forEach(el => {
+      if (el) { addTouchPress(el); addRipple(el, true); }
+    });
 
     function flashBtnFeedback(btn, type = "known") {
       const cls = type === "known" ? "btn-flash-known" : "btn-flash-weak";
@@ -2407,21 +2492,30 @@
         questionCountSelect.value = slider.value;
       }
 
-      // レベルカード選択
+      // レベルカード選択（スプリング + リップル）
       document.querySelectorAll(".level-card").forEach(card => {
+        addTouchPress(card);
+        addRipple(card, false);
         card.addEventListener("click", () => {
           document.querySelectorAll(".level-card").forEach(c => c.classList.remove("selected"));
-          card.classList.add("selected");
+          card.classList.add("selected", "selecting");
+          card.addEventListener("animationend", () => card.classList.remove("selecting"), { once: true });
           levelSelect.value = card.dataset.level;
         });
       });
 
-      // カテゴリチップ選択トグル
+      // カテゴリチップ選択トグル（スプリング + リップル）
       document.querySelectorAll(".cat-chip").forEach(chip => {
+        addTouchPress(chip);
+        addRipple(chip, false);
         chip.addEventListener("click", () => {
           const cb = chip.querySelector("input[type=checkbox]");
           cb.checked = !cb.checked;
           chip.classList.toggle("off", !cb.checked);
+          chip.classList.remove("toggling");
+          void chip.offsetWidth;
+          chip.classList.add("toggling");
+          chip.addEventListener("animationend", () => chip.classList.remove("toggling"), { once: true });
         });
       });
 
