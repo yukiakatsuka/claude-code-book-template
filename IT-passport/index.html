@@ -802,6 +802,108 @@
       margin-top: 18px;
     }
 
+    /* ─── マイクロインタラクション ─── */
+
+    /* タップ押下フィードバック */
+    .level-card:active     { transform: scale(0.93); }
+    .cat-chip:active       { transform: scale(0.93); }
+    .btn-start-main:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(45,91,219,0.25); }
+    .btn-start-sub:active  { transform: scale(0.97); }
+    .choice-btn:active:not(:disabled) { transform: scale(0.98); }
+
+    /* 選択肢ボタン：正解ポップ */
+    @keyframes choiceCorrect {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.04); }
+      70%  { transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+    /* 選択肢ボタン：不正解シェイク */
+    @keyframes choiceWrong {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-7px); }
+      40%       { transform: translateX(6px); }
+      60%       { transform: translateX(-5px); }
+      80%       { transform: translateX(4px); }
+    }
+    .choice-btn.correct { animation: choiceCorrect 0.35s ease forwards; }
+    .choice-btn.wrong   { animation: choiceWrong 0.4s ease forwards; }
+
+    /* スコアバッジのパルス */
+    @keyframes scorePulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+    .score-pulse { animation: scorePulse 0.3s ease; }
+
+    /* 画面切替のスライドイン */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide-up { animation: slideUp 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+
+    /* ─── 暗記カード 3D フリップ ─── */
+    .flashcard-scene {
+      perspective: 900px;
+      cursor: pointer;
+      min-height: 280px;
+      display: block;
+    }
+    /* absolute配置の2面が親の高さを持つよう */
+    .flashcard-inner {
+      position: relative;
+    }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      min-height: 280px;
+      transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flashcard-inner.flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      min-height: 280px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 2px solid #dfe5f0;
+      border-radius: 18px;
+      padding: 24px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      box-sizing: border-box;
+    }
+    .flashcard-face.back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, #f0f5ff, #e8f0ff);
+      border-color: #c5d3f8;
+    }
+    /* カード切替スライド */
+    @keyframes cardSlideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes cardSlideInLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .flashcard-scene.slide-right .flashcard-inner { animation: cardSlideInRight 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+    .flashcard-scene.slide-left  .flashcard-inner { animation: cardSlideInLeft  0.28s cubic-bezier(0.22,1,0.36,1) both; }
+
+    /* 暗記カード：覚えた・あいまいボタンのフィードバック */
+    @keyframes btnFlash {
+      0%   { filter: brightness(1); }
+      40%  { filter: brightness(1.25); }
+      100% { filter: brightness(1); }
+    }
+    .btn-flash { animation: btnFlash 0.3s ease; }
+
     @media (display-mode: standalone) {
       body { user-select: none; }
     }
@@ -986,14 +1088,25 @@
         <div class="flashcard-wrap">
           <div class="question-meta" id="flashCategoryMeta">分野: テクノロジ</div>
 
-          <button type="button" class="flashcard" id="flashcard" aria-live="polite">
-            <div class="flash-side-label" id="flashSideLabel">表面：略語</div>
-            <div class="flash-main" id="flashMain"></div>
-            <div class="flash-sub" id="flashSub"></div>
-          </button>
+          <div class="flashcard-scene" id="flashcardScene" role="button" tabindex="0" aria-label="カードをタップして反転" aria-live="polite">
+            <div class="flashcard-inner" id="flashcardInner">
+              <!-- 表面 -->
+              <div class="flashcard-face front">
+                <div class="flash-side-label">表面：略語</div>
+                <div class="flash-main" id="flashMain"></div>
+                <div class="flash-sub" id="flashSub" style="display:none"></div>
+              </div>
+              <!-- 裏面 -->
+              <div class="flashcard-face back">
+                <div class="flash-side-label" style="color:#2d5bdb">裏面：正式名称・意味・要点</div>
+                <div class="flash-main" id="flashMainBack"></div>
+                <div class="flash-sub" id="flashSubBack"></div>
+              </div>
+            </div>
+          </div>
 
-          <div class="flash-meta" id="flashHint">
-            カードをタップすると表裏が切り替わります。
+          <div class="flash-meta" id="flashHint" style="text-align:center; margin-top:16px;">
+            タップして反転 ↕
           </div>
 
           <div class="buttons">
@@ -1361,10 +1474,14 @@
     const flashSeenText = document.getElementById("flashSeenText");
     const flashProgressFill = document.getElementById("flashProgressFill");
     const flashCategoryMeta = document.getElementById("flashCategoryMeta");
-    const flashcard = document.getElementById("flashcard");
-    const flashSideLabel = document.getElementById("flashSideLabel");
+    const flashcard = document.getElementById("flashcardScene");
+    const flashcardInner = document.getElementById("flashcardInner");
+    const flashcardScene = document.getElementById("flashcardScene");
+    const flashSideLabel = null; // 新構造では不使用
     const flashMain = document.getElementById("flashMain");
     const flashSub = document.getElementById("flashSub");
+    const flashMainBack = document.getElementById("flashMainBack");
+    const flashSubBack = document.getElementById("flashSubBack");
     const flashHint = document.getElementById("flashHint");
     const flashPrevBtn = document.getElementById("flashPrevBtn");
     const flashFlipBtn = document.getElementById("flashFlipBtn");
@@ -1741,6 +1858,8 @@
       resultBox.classList.remove("show");
       resultBox.style.display = "none";
       quizScreen.classList.remove("hidden");
+      quizScreen.classList.add("slide-up");
+      quizScreen.addEventListener("animationend", () => quizScreen.classList.remove("slide-up"), { once: true });
       flashcardScreen.classList.remove("show");
 
       startTimer();
@@ -1785,6 +1904,8 @@
       resultBox.classList.remove("show");
       resultBox.style.display = "none";
       flashcardScreen.classList.add("show");
+      flashcardScreen.classList.add("slide-up");
+      flashcardScreen.addEventListener("animationend", () => flashcardScreen.classList.remove("slide-up"), { once: true });
 
       renderFlashcard();
     }
@@ -1850,15 +1971,32 @@
       judgedQuestions[currentQuestionIndex] = true;
 
       const isCorrect = index === q.answer;
+
+      // 即時アニメーション（renderQuestion前に選択したボタンだけに適用）
+      const btns = choicesArea.querySelectorAll(".choice-btn");
+      btns.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.answer) btn.classList.add("correct");
+        if (i === index && !isCorrect) btn.classList.add("wrong");
+      });
+
       if (isCorrect) {
         score += 1;
         removeWrongQuestionId(q.id);
+        // スコア表示パルス
+        scoreDisplay.classList.remove("score-pulse");
+        void scoreDisplay.offsetWidth;
+        scoreDisplay.classList.add("score-pulse");
+        scoreDisplay.addEventListener("animationend", () => scoreDisplay.classList.remove("score-pulse"), { once: true });
       } else {
         addWrongQuestionId(q.id);
       }
 
-      renderQuestion();
-      nextBtn.focus();
+      // アニメーション完了後に全体再描画
+      setTimeout(() => {
+        renderQuestion();
+        nextBtn.focus();
+      }, isCorrect ? 360 : 420);
 
       if (isCorrect && isAutoAdvanceEnabled() && currentQuestionIndex < currentQuiz.length - 1) {
         triggerAutoAdvance();
@@ -2026,23 +2164,31 @@
       flashProgressFill.style.width = `${percent}%`;
     }
 
-    function renderFlashcard() {
+    function renderFlashcard(slideDir) {
       const card = flashcards[currentFlashIndex];
       updateFlashProgress();
       updateFlashStats();
 
       flashCategoryMeta.textContent = `分野: ${card.category} / ID: ${card.id}`;
 
-      if (!isFlashBackSide) {
-        flashSideLabel.textContent = "表面：略語";
-        flashMain.textContent = card.abbreviation;
-        flashSub.textContent = "";
-        flashHint.textContent = "カードをタップして、正式名称・意味・要点を確認してください。";
-      } else {
-        flashSideLabel.textContent = "裏面：正式名称・意味・要点";
-        flashMain.textContent = card.fullName;
-        flashSub.textContent = `${card.description}\n\n出典問題: ${card.sourceQuestion}`;
-        flashHint.textContent = "理解できたら「覚えた」、まだ怪しければ「あいまい」で記録してください。";
+      // 両面のテキストをセット
+      flashMain.textContent = card.abbreviation;
+      flashMainBack.textContent = card.fullName;
+      flashSubBack.textContent = `${card.description}\n\n出典問題: ${card.sourceQuestion}`;
+
+      // フリップ状態をリセット（表面を出す）
+      flashcardInner.classList.remove("flipped");
+      isFlashBackSide = false;
+
+      // スライドアニメーション
+      if (slideDir) {
+        flashcardScene.classList.remove("slide-right", "slide-left");
+        // リフロー強制
+        void flashcardScene.offsetWidth;
+        flashcardScene.classList.add(slideDir === "right" ? "slide-right" : "slide-left");
+        flashcardScene.addEventListener("animationend", () => {
+          flashcardScene.classList.remove("slide-right", "slide-left");
+        }, { once: true });
       }
 
       flashPrevBtn.disabled = currentFlashIndex === 0;
@@ -2052,30 +2198,27 @@
     function flipFlashcard() {
       if (!flashcards.length) return;
       isFlashBackSide = !isFlashBackSide;
-      renderFlashcard();
+      flashcardInner.classList.toggle("flipped", isFlashBackSide);
     }
 
     function goPrevFlashcard() {
       if (currentFlashIndex > 0) {
         currentFlashIndex -= 1;
-        isFlashBackSide = false;
-        renderFlashcard();
+        renderFlashcard("left");
       }
     }
 
     function goNextFlashcard() {
       if (currentFlashIndex < flashcards.length - 1) {
         currentFlashIndex += 1;
-        isFlashBackSide = false;
-        renderFlashcard();
+        renderFlashcard("right");
       }
     }
 
     function goToNextIfPossible() {
       if (currentFlashIndex < flashcards.length - 1) {
         currentFlashIndex += 1;
-        isFlashBackSide = false;
-        renderFlashcard();
+        renderFlashcard("right");
       } else {
         renderFlashcard();
       }
@@ -2105,18 +2248,28 @@
     flashModeTab.addEventListener("click", () => switchAppMode("flash"));
 
     flashcard.addEventListener("click", flipFlashcard);
+    flashcard.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flipFlashcard(); } });
     flashFlipBtn.addEventListener("click", flipFlashcard);
     flashPrevBtn.addEventListener("click", goPrevFlashcard);
     flashNextBtn.addEventListener("click", goNextFlashcard);
     flashBackBtn.addEventListener("click", returnToSetup);
 
+    function flashBtnFeedback(btn) {
+      btn.classList.remove("btn-flash");
+      void btn.offsetWidth;
+      btn.classList.add("btn-flash");
+      btn.addEventListener("animationend", () => btn.classList.remove("btn-flash"), { once: true });
+    }
+
     markKnownBtn.addEventListener("click", () => {
+      flashBtnFeedback(markKnownBtn);
       const card = flashcards[currentFlashIndex];
       markFlashKnown(card.id);
       goToNextIfPossible();
     });
 
     markWeakBtn.addEventListener("click", () => {
+      flashBtnFeedback(markWeakBtn);
       const card = flashcards[currentFlashIndex];
       markFlashWeak(card.id);
       goToNextIfPossible();
