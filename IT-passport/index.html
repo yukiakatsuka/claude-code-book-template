@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#2d5bdb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ITパスポート" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <title>ITパスポート 1問1答クイズ</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+
+  <style>
+    * { box-sizing: border-box; }
+    html {
+      height: 100%;
+      background: #f5f7fb;
+    }
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: #f5f7fb;
+      color: #222;
+      line-height: 1.6;
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+    .container {
+      max-width: 1040px;
+      margin: 32px auto;
+      padding: 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 28px;
+    }
+    h1, h2, h3 { margin-top: 0; }
+    .sub {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #fafcff;
+      border: 1px solid #e5eaf3;
+      border-radius: 14px;
+    }
+    .setting-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: flex-start;
+      margin-top: 12px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 220px;
+    }
+    .field label {
+      font-weight: 700;
+      font-size: 14px;
+      color: #455066;
+    }
+    select {
+      padding: 10px 12px;
+      border: 1px solid #cfd7e6;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #fff;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      margin-top: 10px;
+    }
+    .checkbox-item {
+      background: #fff;
+      border: 1px solid #d9e1ee;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .badge {
+      display: inline-block;
+      background: #eef3ff;
+      color: #2d5bdb;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .score {
+      font-weight: 700;
+      color: #333;
+    }
+    .progress-wrap {
+      margin-bottom: 18px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: #5b6780;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: #e7edf8;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #5b84ff, #2d5bdb);
+      transition: width 0.25s ease;
+    }
+    .question-box {
+      margin-top: 12px;
+      padding: 20px;
+      border: 1px solid #e7eaf3;
+      border-radius: 14px;
+      background: #fafcff;
+    }
+    .question-number {
+      font-size: 14px;
+      color: #6a7485;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .question-meta {
+      font-size: 13px;
+      color: #5b6780;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .question-text {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      border: 2px solid #dfe5f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: 0.18s ease;
+      background: #fff;
+      font-size: 16px;
+      color: #222;
+      min-height: 52px;
+      touch-action: manipulation;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #7f9cf5;
+      background: #f6f8ff;
+    }
+    .choice-btn:focus-visible,
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #8ab4ff;
+      outline-offset: 2px;
+    }
+    .choice-btn.correct {
+      border-color: #1f9d55;
+      background: #eaf8f0;
+      font-weight: 700;
+    }
+    .choice-btn.wrong {
+      border-color: #d64545;
+      background: #fdeeee;
+      font-weight: 700;
+    }
+    .choice-btn:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+    .buttons {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      min-height: 48px;
+      touch-action: manipulation;
+    }
+    .primary {
+      background: #2d5bdb;
+      color: white;
+    }
+    .primary:hover { background: #2249b0; }
+    .secondary {
+      background: #eef2f7;
+      color: #333;
+    }
+    .secondary:hover { background: #dde5ef; }
+    .danger {
+      background: #cc3d3d;
+      color: white;
+    }
+    .danger:hover { background: #a92f2f; }
+    .success {
+      background: #1f9d55;
+      color: white;
+    }
+    .success:hover { background: #177742; }
+    .warning {
+      background: #c98a16;
+      color: white;
+    }
+    .warning:hover { background: #a46d0d; }
+
+    .answer-box,
+    .result-box,
+    .review-box,
+    .status-box,
+    .install-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 12px;
+      display: none;
+    }
+    .answer-box.show,
+    .result-box.show,
+    .review-box.show,
+    .status-box.show,
+    .install-box.show {
+      display: block;
+    }
+    .answer-box {
+      background: #f4f8ff;
+      border: 1px solid #d7e4ff;
+    }
+    .status-box {
+      background: #fff8e8;
+      border: 1px solid #f0d38a;
+      color: #6c5200;
+    }
+    .install-box {
+      background: #eef6ff;
+      border: 1px solid #cfe1ff;
+      color: #234a8a;
+    }
+    .answer-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .answer-line { margin-bottom: 8px; }
+    .kaisetsu { color: #444; }
+    .result-box {
+      background: #f9fff2;
+      border: 1px solid #dceec5;
+    }
+    .review-box {
+      background: #fff8f2;
+      border: 1px solid #f0d9c2;
+    }
+    .result-score {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e7a39;
+      margin: 10px 0;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .mini-card {
+      border: 1px solid #dbe3ef;
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+    .hidden { display: none !important; }
+
+    .mode-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .tab-btn {
+      border: 2px solid #d7e4ff;
+      background: #f7faff;
+      color: #2d5bdb;
+    }
+    .tab-btn.active {
+      background: #2d5bdb;
+      color: #fff;
+      border-color: #2d5bdb;
+    }
+
+    .flash-setup-note {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f4f8ff;
+      border: 1px solid #d7e4ff;
+      color: #35518f;
+    }
+
+    .timer-display {
+      font-weight: 700;
+      font-size: 14px;
+      color: #5b6780;
+      background: #eef2f7;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .timer-display.warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .dont-know-btn {
+      width: 100%;
+      border: 2px dashed #c98a16;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      background: #fffbf0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #8a5c00;
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: 0.18s ease;
+    }
+    .dont-know-btn:hover:not(:disabled) {
+      background: #fff3cd;
+      border-color: #a46d0d;
+    }
+    .dont-know-btn:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .answer-title.dontknow {
+      color: #8a5c00;
+    }
+    .shortcut-hint {
+      font-size: 12px;
+      color: #8a94a6;
+      margin-top: 8px;
+      text-align: center;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      /* タッチデバイス（iPhone等）ではキーボードショートカットヒントを非表示 */
+      .shortcut-hint { display: none; }
+    }
+    .wrong-review-section {
+      margin-top: 20px;
+    }
+    .wrong-review-section h3 {
+      font-size: 16px;
+      color: #d64545;
+      margin-bottom: 12px;
+    }
+    .wrong-item {
+      border: 1px solid #f0d5d5;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .wrong-item-header {
+      background: #fff5f5;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wrong-item-header:hover {
+      background: #feecec;
+    }
+    .wrong-item-header .wrong-num {
+      color: #d64545;
+      font-size: 13px;
+      min-width: 28px;
+      padding-top: 2px;
+    }
+    .wrong-item-body {
+      padding: 14px 16px;
+      background: #fff;
+      border-top: 1px solid #f0d5d5;
+      display: none;
+    }
+    .wrong-item-body.open {
+      display: block;
+    }
+    .wrong-detail-line {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .wrong-detail-line .label {
+      font-weight: 700;
+      color: #5b6780;
+      margin-right: 4px;
+    }
+    .wrong-detail-line .my-answer {
+      color: #d64545;
+    }
+    .wrong-detail-line .correct-answer {
+      color: #1f9d55;
+    }
+    .wrong-detail-line .explanation {
+      color: #444;
+    }
+    .auto-advance-option {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #455066;
+      font-weight: 700;
+    }
+    .auto-advance-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .auto-advance-progress {
+      display: none;
+      height: 3px;
+      background: #e7edf8;
+      border-radius: 999px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .auto-advance-progress.active {
+      display: block;
+    }
+    .auto-advance-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1f9d55, #34d474);
+      transition: width 1.5s linear;
+    }
+    .flashcard-screen {
+      display: none;
+    }
+    .flashcard-screen.show {
+      display: block;
+    }
+    .flashcard-wrap {
+      margin-top: 12px;
+      padding: 20px;
+      border: 1px solid #e7eaf3;
+      border-radius: 14px;
+      background: #fafcff;
+    }
+    .flashcard {
+      min-height: 280px;
+      border: 2px solid #dfe5f0;
+      border-radius: 18px;
+      padding: 24px;
+      background: #fff;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+    }
+    .flashcard:hover {
+      border-color: #7f9cf5;
+      background: #fcfdff;
+    }
+    .flash-side-label {
+      font-size: 13px;
+      color: #6a7485;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .flash-main {
+      font-size: 34px;
+      font-weight: 800;
+      color: #1f2d4d;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .flash-sub {
+      font-size: 18px;
+      color: #44516b;
+      white-space: pre-wrap;
+    }
+    .flash-meta {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #5b6780;
+      font-weight: 700;
+    }
+    .flash-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    @media (display-mode: standalone) {
+      body {
+        user-select: none;
+      }
+      .container {
+        margin-top: 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        margin: 20px auto;
+        padding: 12px;
+      }
+      .card { padding: 18px; }
+      .question-text { font-size: 19px; }
+      .buttons { flex-direction: column; }
+      button { width: 100%; }
+      .field { width: 100%; min-width: 100%; }
+      .progress-meta {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .flash-main {
+        font-size: 28px;
+      }
+      .flash-sub {
+        font-size: 16px;
+      }
+      .mode-tabs {
+        flex-direction: column;
+      }
+      .tab-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>ITパスポート 学習アプリ</h1>
+      <div class="sub">
+        クイズと暗記カードを切り替えて学習できます。暗記カードでは略語の正式名称・意味・要点を反復できます。
+      </div>
+
+      <div id="installBox" class="install-box" aria-live="polite"></div>
+
+      <div class="mode-tabs">
+        <button type="button" class="tab-btn active" id="quizModeTab">クイズモード</button>
+        <button type="button" class="tab-btn" id="flashModeTab">暗記カードモード</button>
+      </div>
+
+      <div id="setupScreen" class="section">
+        <h2 id="setupTitle">クイズ出題設定</h2>
+        <div id="statusBox" class="status-box" aria-live="polite"></div>
+
+        <div class="setting-row">
+          <div class="field">
+            <label for="questionCount">問題数（10〜100）</label>
+            <select id="questionCount"></select>
+          </div>
+
+          <div class="field">
+            <label for="levelSelect">レベル</label>
+            <select id="levelSelect">
+              <option value="1">レベル1（基礎確認）</option>
+              <option value="2">レベル2（ひっかけ強化）</option>
+              <option value="3">レベル3（実戦寄り）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 16px;">
+          <label>分野</label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" class="categoryCheckbox" value="ストラテジ" checked> ストラテジ</label>
+            <label class="checkbox-item"><input type="checkbox" class="categoryCheckbox" value="マネジメント" checked> マネジメント</label>
+            <label class="checkbox-item"><input type="checkbox" class="categoryCheckbox" value="テクノロジ" checked> テクノロジ</label>
+          </div>
+        </div>
+
+        <div class="auto-advance-option">
+          <input type="checkbox" id="autoAdvanceCheck">
+          <label for="autoAdvanceCheck">正解後に自動で次の問題へ（1.5秒）</label>
+        </div>
+
+        <div id="quizSetupButtons" class="buttons">
+          <button class="primary" id="startBtn">通常モードで開始</button>
+          <button class="secondary" id="startReviewBtn">間違えた問題だけ復習</button>
+        </div>
+
+        <div id="flashSetupButtons" class="buttons hidden">
+          <button class="primary" id="startFlashBtn">暗記カードを開始</button>
+          <button class="secondary" id="startWeakFlashBtn">あいまいカードだけ復習</button>
+        </div>
+
+        <div id="quizSetupNote" class="review-box show" style="margin-top:18px;">
+          <strong>注意:</strong>
+          復習モードは、これまでに間違えた問題がある場合だけ開始できます。履歴はブラウザの保存領域に残ります。
+        </div>
+
+        <div id="flashSetupNote" class="flash-setup-note hidden">
+          <strong>暗記カード学習:</strong>
+          表面に略語、裏面に正式名称・日本語・要点を表示します。タップで表裏反転できます。<br>
+          「覚えた」「あいまい」で記録でき、あいまいカードだけを後で回せます。
+        </div>
+      </div>
+
+      <div id="quizScreen" class="hidden">
+        <div class="topbar">
+          <div class="badge" id="progress">第1問 / 10問</div>
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <div class="score" id="scoreDisplay">正解数: 0</div>
+        </div>
+
+        <div class="progress-wrap" aria-label="進捗">
+          <div class="progress-meta">
+            <span id="progressText">進捗 10%</span>
+            <span id="answeredText">回答済み 0 / 10</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <div class="question-number" id="questionNumber">問題 1</div>
+          <div class="question-meta" id="questionMeta">分野: テクノロジ / レベル3</div>
+          <div class="question-text" id="questionText"></div>
+
+          <div class="choices" id="choicesArea" role="group" aria-labelledby="questionText"></div>
+
+          <div id="dontKnowArea" style="margin-top: 12px;">
+            <button type="button" class="dont-know-btn" id="dontKnowBtn">わからない</button>
+          </div>
+
+          <div class="auto-advance-progress" id="autoAdvanceProgress">
+            <div class="auto-advance-fill" id="autoAdvanceFill"></div>
+          </div>
+
+          <div class="buttons">
+            <button class="secondary" id="prevBtn">前の問題</button>
+            <button class="secondary" id="nextBtn">次の問題</button>
+            <button class="danger" id="backToSetupBtn">設定へ戻る</button>
+          </div>
+
+          <div class="shortcut-hint" id="shortcutHint">キー 1〜4 で選択 ／ → または Enter で次へ ／ ← で前へ</div>
+
+          <div class="answer-box" id="answerBox" aria-live="polite">
+            <div class="answer-title" id="answerTitle"></div>
+            <div class="answer-line"><strong>正答：</strong><span id="answerValue"></span></div>
+            <div class="kaisetsu"><strong>解説：</strong><span id="explanationValue"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="flashcardScreen" class="flashcard-screen">
+        <div class="topbar">
+          <div class="badge" id="flashProgress">カード 1 / 10</div>
+          <div class="score" id="flashModeLabel">略語暗記</div>
+        </div>
+
+        <div class="progress-wrap" aria-label="進捗">
+          <div class="progress-meta">
+            <span id="flashProgressText">進捗 10%</span>
+            <span id="flashSeenText">判定済み 0 / 10</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="flashProgressFill"></div>
+          </div>
+        </div>
+
+        <div class="flashcard-wrap">
+          <div class="question-meta" id="flashCategoryMeta">分野: テクノロジ</div>
+
+          <button type="button" class="flashcard" id="flashcard" aria-live="polite">
+            <div class="flash-side-label" id="flashSideLabel">表面：略語</div>
+            <div class="flash-main" id="flashMain"></div>
+            <div class="flash-sub" id="flashSub"></div>
+          </button>
+
+          <div class="flash-meta" id="flashHint">
+            カードをタップすると表裏が切り替わります。
+          </div>
+
+          <div class="buttons">
+            <button class="secondary" id="flashPrevBtn">前のカード</button>
+            <button class="secondary" id="flashFlipBtn">表裏を切替</button>
+            <button class="secondary" id="flashNextBtn">次のカード</button>
+          </div>
+
+          <div class="buttons">
+            <button class="success" id="markKnownBtn">覚えた</button>
+            <button class="warning" id="markWeakBtn">あいまい</button>
+            <button class="danger" id="flashBackBtn">設定へ戻る</button>
+          </div>
+
+          <div class="flash-stats">
+            <div class="mini-card"><strong>覚えた</strong><div id="knownCountText">0枚</div></div>
+            <div class="mini-card"><strong>あいまい</strong><div id="weakCountText">0枚</div></div>
+            <div class="mini-card"><strong>カード総数</strong><div id="flashBankCountText">0枚</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <h2>結果</h2>
+        <div class="result-score" id="finalScore"></div>
+        <div id="finalMessage"></div>
+
+        <div class="result-grid">
+          <div class="mini-card"><strong>正解数</strong><div id="correctCountText"></div></div>
+          <div class="mini-card"><strong>不正解数</strong><div id="wrongCountText"></div></div>
+          <div class="mini-card"><strong>出題モード</strong><div id="modeText"></div></div>
+          <div class="mini-card"><strong>経過時間</strong><div id="elapsedTimeText">-</div></div>
+        </div>
+
+        <div class="buttons">
+          <button class="primary" id="retrySameBtn">同じ設定でもう一度</button>
+          <button class="secondary" id="reviewWrongBtn">間違えた問題だけ復習</button>
+          <button class="secondary" id="returnSetupBtn">設定へ戻る</button>
+        </div>
+
+        <div id="wrongReviewSection" class="wrong-review-section" style="display:none;">
+          <h3>間違えた問題の確認</h3>
+          <div id="wrongReviewList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questionBank = [
+      {
+        id: "S001",
+        category: "ストラテジ",
+        question: "企業の強み・弱み・機会・脅威を整理する分析手法はどれか。",
+        level1Choices: ["PPM", "SWOT分析", "ABC分析", "PERT"],
+        level2Choices: ["3C分析", "SWOT分析", "PPM", "バリューチェーン分析"],
+        level3Choices: ["3C分析", "SWOT分析", "PPM", "CSF分析"],
+        answer: 1,
+        explanation: "SWOT分析は Strength（強み）・Weakness（弱み）・Opportunity（機会）・Threat（脅威）の4要素で整理する分析手法。"
+      },
+      {
+        id: "S002",
+        category: "ストラテジ",
+        question: "DXの説明として最も適切なものはどれか。",
+        level1Choices: ["紙をPDFに変えることだけ", "デジタル技術で業務やビジネスを変革すること", "社内にPC台数を増やすこと", "SNSを始めること"],
+        level2Choices: ["既存業務の単純なデジタル化", "デジタル技術で業務やビジネスを変革すること", "紙帳票を電子保存すること", "IT部門の人員を増やすこと"],
+        level3Choices: ["既存業務の効率化を目的とした部分的デジタル化", "デジタル技術で業務やビジネスを変革すること", "紙情報の電子化によるペーパーレス化", "情報システム部門の強化によるIT化推進"],
+        answer: 1,
+        explanation: "DX は Digital Transformation の略。デジタル技術で業務やビジネスモデルそのものを変革することを指し、単なる電子化ではない。"
+      },
+      {
+        id: "S003",
+        category: "ストラテジ",
+        question: "ERPの説明として適切なものはどれか。",
+        level1Choices: ["企業内の基幹業務を統合管理する仕組み", "顧客関係を管理する仕組み", "供給連鎖を最適化する考え方", "工程進捗を線表で示す道具"],
+        level2Choices: ["企業内の基幹業務を統合管理する仕組み", "顧客との関係を管理する仕組み", "供給連鎖全体を最適化する考え方", "経営戦略立案を支援する分析手法"],
+        level3Choices: ["企業内の基幹業務を統合管理する仕組み", "顧客との関係を管理する仕組み", "供給連鎖全体を最適化する管理手法", "業務プロセスを抜本的に再設計する手法"],
+        answer: 0,
+        explanation: "ERP は Enterprise Resource Planning の略。会計・購買・販売・在庫などの基幹業務を企業全体で統合管理する仕組み。"
+      },
+      {
+        id: "M001",
+        category: "マネジメント",
+        question: "ウォーターフォール開発の特徴として適切なものはどれか。",
+        level1Choices: ["工程を順番に進める", "短い反復を繰り返して進める", "変更を前提に小刻みに開発する", "要件定義を最小化して進める"],
+        level2Choices: ["工程を順番に進める", "短い反復を繰り返して進める", "利用者と頻繁に仕様調整しながら進める", "スプリント単位で進める"],
+        level3Choices: ["工程を順番に進める", "短い反復ごとに成果物を見直す", "変更を前提として段階的に価値を届ける", "スプリント単位で優先度を更新する"],
+        answer: 0,
+        explanation: "ウォーターフォール開発は、要件定義から設計・実装・テストへと工程を順番に進める開発手法。"
+      },
+      {
+        id: "M002",
+        category: "マネジメント",
+        question: "WBSの目的として適切なものはどれか。",
+        level1Choices: ["作業を分解し管理しやすくする", "作業間の依存関係だけを図示する", "工程の最長経路を示す", "障害の優先順位を決める"],
+        level2Choices: ["作業を分解し管理しやすくする", "作業の依存関係だけを整理する", "プロジェクト全体の費用配分を決める", "サービスレベルを数値化する"],
+        level3Choices: ["作業を分解し管理しやすくする", "作業の依存関係と最長経路を決定する", "プロジェクト全体の費用配分を決める", "サービスレベルを数値化する"],
+        answer: 0,
+        explanation: "WBS は Work Breakdown Structure の略。作業を細かく分解して、管理しやすくするための手法。"
+      },
+      {
+        id: "M003",
+        category: "マネジメント",
+        question: "RTOが示すものはどれか。",
+        level1Choices: ["目標復旧時間", "許容できるデータ損失時点", "年間売上目標", "在庫回転率"],
+        level2Choices: ["目標復旧時間", "許容できるデータ損失時点", "障害発生確率", "年間停止時間"],
+        level3Choices: ["目標復旧時間", "許容できるデータ損失時点", "目標サービス水準", "障害の検知時間"],
+        answer: 0,
+        explanation: "RTO は Recovery Time Objective の略。障害や災害の発生後、システムや業務をどれだけの時間で復旧させるかという目標時間を表す。"
+      },
+      {
+        id: "T001",
+        category: "テクノロジ",
+        question: "OSの役割として適切なものはどれか。",
+        level1Choices: ["ハードウェアやソフトウェア資源を管理する", "データベース管理機能そのものを提供する", "表計算機能や文書作成機能を提供する", "通信暗号化だけを専門に担う"],
+        level2Choices: ["ハードウェアやソフトウェア資源を管理する", "データベースの表構造を定義する", "アプリケーションを必ず高速化する", "ネットワーク通信だけを担う"],
+        level3Choices: ["ハードウェアやソフトウェア資源を管理する", "データベース管理機能そのものを提供する", "表計算機能や文書作成機能を提供する", "通信暗号化だけを専門に担う"],
+        answer: 0,
+        explanation: "OS は Operating System の略。ハードウェアやソフトウェア資源を管理し、アプリケーションが動くための基本機能を提供する。"
+      },
+      {
+        id: "T002",
+        category: "テクノロジ",
+        question: "主キーの役割として正しいものはどれか。",
+        level1Choices: ["レコードを一意に識別する", "他表との参照関係を表す", "検索性能を上げる索引を自動生成する", "データ型を決定する"],
+        level2Choices: ["レコードを一意に識別する", "表同士の関連を示す", "検索性能だけを上げる", "重複データを自動圧縮する"],
+        level3Choices: ["レコードを一意に識別する", "他表との参照関係を表す", "索引を自動生成して検索高速化する", "データ型を決定する"],
+        answer: 0,
+        explanation: "主キーは、表の各レコードを重複なく一意に識別するための項目。"
+      },
+      {
+        id: "T003",
+        category: "テクノロジ",
+        question: "DNSの役割として適切なものはどれか。",
+        level1Choices: ["ドメイン名とIPアドレスの対応付け", "HTTP通信の暗号化", "Webページの内容配信", "MACアドレスの学習"],
+        level2Choices: ["ドメイン名とIPアドレスの対応付け", "IPアドレスの暗号化", "URLの圧縮", "メール本文の転送管理"],
+        level3Choices: ["ドメイン名とIPアドレスの対応付け", "HTTP通信の暗号化", "Webページの内容配信", "MACアドレスの学習"],
+        answer: 0,
+        explanation: "DNS は Domain Name System の略。ドメイン名と IP アドレスを対応付ける仕組みで、名前解決に使われる。"
+      },
+      {
+        id: "T004",
+        category: "テクノロジ",
+        question: "公開鍵暗号方式の説明として適切なものはどれか。",
+        level1Choices: ["暗号化と復号で異なる鍵を用いる方式", "暗号化と復号に同一鍵を用いる方式", "平文を固定長に変換する方式", "通信内容の圧縮だけを行う方式"],
+        level2Choices: ["暗号化と復号で異なる鍵を用いる方式", "暗号化と復号で同じ鍵を用いる方式", "ハッシュ値だけで通信する方式", "認証専用で暗号化できない方式"],
+        level3Choices: ["暗号化と復号で異なる鍵を用いる方式", "暗号化と復号に同一鍵を用いる方式", "平文を固定長に変換する方式", "通信内容の圧縮だけを行う方式"],
+        answer: 0,
+        explanation: "公開鍵暗号方式は、暗号化と復号に異なる鍵を使う方式。公開鍵と秘密鍵を組み合わせて用いる。"
+      },
+      {
+        id: "T005",
+        category: "テクノロジ",
+        question: "デジタル署名の目的として適切なものはどれか。",
+        level1Choices: ["送信者確認と改ざん検知", "通信内容の機密性確保だけ", "圧縮による転送効率向上", "利用者権限の自動設定"],
+        level2Choices: ["送信者確認と改ざん検知", "通信内容そのものの圧縮", "ファイル容量の削減", "ネットワーク機器の認識"],
+        level3Choices: ["送信者確認と改ざん検知", "通信内容の機密性確保だけ", "圧縮による転送効率向上", "利用者権限の自動設定"],
+        answer: 0,
+        explanation: "デジタル署名は、送信者本人であることの確認と、データが改ざんされていないことの確認を目的とする。"
+      },
+
+      // ストラテジ 追加基本問題
+      { id:"S004", category:"ストラテジ", question:"PDCAサイクルの正しい順番はどれか。", level1Choices:["Plan→Do→Check→Act","Do→Plan→Check→Act","Check→Do→Plan→Act","Plan→Check→Do→Act"], level2Choices:["Plan→Do→Check→Act","Do→Check→Plan→Act","Check→Act→Plan→Do","Plan→Act→Check→Do"], level3Choices:["Plan→Do→Check→Act","Do→Plan→Check→Act","Check→Do→Act→Plan","Act→Plan→Do→Check"], answer:0, explanation:"PDCA サイクルは Plan（計画）→ Do（実行）→ Check（評価）→ Act（改善）の順に繰り返して業務を継続的に改善する手法。" },
+      { id:"S005", category:"ストラテジ", question:"SCMの説明として適切なものはどれか。", level1Choices:["調達から販売までの供給連鎖を最適化する管理手法","顧客との関係を管理する手法","従業員の評価を一元管理する手法","財務諸表を自動作成する仕組み"], level2Choices:["調達から販売までの供給連鎖を最適化する管理手法","顧客との関係を管理する手法","基幹業務を統合管理する仕組み","社員研修の効果を測定する手法"], level3Choices:["調達から販売までの供給連鎖を最適化する管理手法","顧客との関係を管理する手法","企業の強み・弱みを整理する分析手法","業務プロセスを抜本的に再設計する手法"], answer:0, explanation:"SCM は Supply Chain Management の略。原材料の調達から製造・販売・物流まで、供給連鎖全体を最適化する管理手法。" },
+      { id:"S006", category:"ストラテジ", question:"知的財産権のうち、プログラムを保護する権利として適切なものはどれか。", level1Choices:["著作権","特許権","商標権","実用新案権"], level2Choices:["著作権","特許権","不正競争防止法","商標権"], level3Choices:["著作権","特許権","商標権","意匠権"], answer:0, explanation:"プログラム（ソフトウェア）は著作物として著作権で保護される。特許権は技術的思想の創作を保護するが、プログラムそのものの保護は主に著作権による。" },
+      { id:"S007", category:"ストラテジ", question:"OJTの説明として適切なものはどれか。", level1Choices:["職場で実務を通じて行う教育訓練","外部セミナーに参加して学ぶ訓練","通信教育で自己学習する訓練","全員一斉に座学で学ぶ訓練"], level2Choices:["職場で実務を通じて行う教育訓練","外部研修機関での集合訓練","e-ラーニングだけで行う訓練","自宅での独学訓練"], level3Choices:["職場で実務を通じて行う教育訓練","職場外での集合教育訓練","通信手段を使った遠隔学習","資格取得専門の受験対策学習"], answer:0, explanation:"OJT は On-the-Job Training の略。職場で実際の業務を通じて行う教育訓練のことで、Off-JT（職場外訓練）と対比される。" },
+      { id:"S008", category:"ストラテジ", question:"電子商取引でBtoCが示す取引形態として適切なものはどれか。", level1Choices:["企業から消費者への取引","企業間の取引","消費者間の取引","政府と企業の取引"], level2Choices:["企業から消費者への取引","企業間の取引","消費者間の取引","政府から消費者への取引"], level3Choices:["企業から消費者への取引","企業間の取引","消費者間の取引","政府と企業の取引"], answer:0, explanation:"BtoC は Business to Consumer の略。企業が消費者に対して商品やサービスを提供する取引形態。" },
+      { id:"S009", category:"ストラテジ", question:"AIの活用例として最も適切なものはどれか。", level1Choices:["大量の画像データから特徴を学習して分類する","表計算ソフトで数値を集計する","プリンタで文書を印刷する","メールを送受信する"], level2Choices:["大量の画像データから特徴を学習して分類する","データをCSV形式で保存する","キーボードで文字入力する","ネットワークケーブルを接続する"], level3Choices:["大量の画像データから特徴を学習して分類する","表計算ソフトで売上を集計する","文書をPDF変換して保存する","社内SNSで情報共有する"], answer:0, explanation:"AI（人工知能）は大量のデータから特徴を学習し、画像分類・音声認識・自然言語処理などに活用される。" },
+      { id:"S010", category:"ストラテジ", question:"グリーンITの説明として適切なものはどれか。", level1Choices:["ITを活用した環境負荷の低減","緑色のPCを普及させること","農業分野だけでIT活用すること","IT機器を自然の中に設置すること"], level2Choices:["ITを活用した環境負荷の低減","省エネ法の遵守だけを指す概念","IT機器の色を統一すること","自然エネルギー企業への投資のみ"], level3Choices:["ITを活用した環境負荷の低減","CO2排出量の計算だけを行うシステム","省エネ家電の普及キャンペーン","農業IT化のみを指す概念"], answer:0, explanation:"グリーン IT は、IT 機器の省エネや IT を活用した環境負荷低減の取り組みを指す概念。" },
+      { id:"S011", category:"ストラテジ", question:"標準化の目的として最も適切なものはどれか。", level1Choices:["互換性の確保や品質の均一化","競争を排除して独占を守ること","製品の価格を固定すること","企業秘密を保護すること"], level2Choices:["互換性の確保や品質の均一化","特定企業の競争優位を固定すること","すべての製品を同一にすること","政府の規制を強化すること"], level3Choices:["互換性の確保や品質の均一化","競合企業の参入を防ぐこと","製品コストを最大化すること","消費者の選択肢を減らすこと"], answer:0, explanation:"標準化は、製品・サービス・プロセスの互換性や品質の均一化を図ることを目的とする。ISO などの国際標準がその例。" },
+      { id:"S012", category:"ストラテジ", question:"リスキリングの説明として最も適切なものはどれか。", level1Choices:["社会変化に対応するために新しいスキルを学び直すこと","過去に習得したスキルを復習すること","新卒者が最初に受ける基礎研修","資格試験の再受験対策"], level2Choices:["社会変化に対応するために新しいスキルを学び直すこと","退職後に趣味として学ぶ活動","採用面接のための準備訓練","既存業務のマニュアル化"], level3Choices:["社会変化に対応するために新しいスキルを学び直すこと","現在の職種内で習熟度を高めること","IT機器の操作を教える研修","スキルの棚卸しと評価だけを行うこと"], answer:0, explanation:"リスキリングとは、デジタル技術の進化など社会変化に対応するために、新しいスキルを習得し直すこと。DX 推進に伴い注目されている。" },
+      { id:"S013", category:"ストラテジ", question:"パーパス経営の説明として最も適切なものはどれか。", level1Choices:["企業の社会的存在意義を定義しそれに基づいて経営する手法","短期利益の最大化だけを追求する経営","株主優先で配当を最大化する経営","コスト削減を第一目標とした経営"], level2Choices:["企業の社会的存在意義を定義しそれに基づいて経営する手法","製品ラインナップの拡大を目的とした経営","ブランド認知度の向上だけを目指す戦略","業務効率化による利益率改善経営"], level3Choices:["企業の社会的存在意義を定義しそれに基づいて経営する手法","利益率向上を最優先とした財務重視経営","M&Aによる規模拡大を重視した成長戦略","製品品質の均一化を主目的とした品質経営"], answer:0, explanation:"パーパス経営とは、企業が単なる利益追求にとどまらず、社会における存在意義（パーパス）を定め、それに基づいて経営する手法。" },
+      { id:"S014", category:"ストラテジ", question:"インボイス制度（適格請求書等保存方式）の説明として適切なものはどれか。", level1Choices:["消費税の仕入税額控除に必要な適格請求書を発行・保存する制度","電子帳簿を義務付ける制度","法人税の申告を電子化する制度","輸出入に関する関税申告の仕組み"], level2Choices:["消費税の仕入税額控除に必要な適格請求書を発行・保存する制度","所得税の確定申告を一本化する仕組み","電子マネーの利用記録を保存する制度","クレジットカード明細の電子保管ルール"], level3Choices:["消費税の仕入税額控除に必要な適格請求書を発行・保存する制度","売上の自動集計を義務付ける税務制度","企業間取引の電子化を強制する規制","電子署名を全取引に義務付ける法律"], answer:0, explanation:"インボイス制度（適格請求書等保存方式）は、2023年10月から導入された消費税の仕入税額控除に必要な制度。適格請求書発行事業者の登録が必要。" },
+      { id:"S015", category:"ストラテジ", question:"エコーチェンバー現象の説明として最も適切なものはどれか。", level1Choices:["SNSで同じ意見ばかりが共有され特定の考えが強化される現象","音声が壁に反響して増幅する物理現象","複数サーバが同じデータを複製する分散処理","ソーシャルメディアの広告費用が増大する現象"], level2Choices:["SNSで同じ意見ばかりが共有され特定の考えが強化される現象","インターネット回線の混雑で速度が低下する現象","コンテンツが世界中に同時配信される仕組み","アクセスが集中してサーバが過負荷になる状態"], level3Choices:["SNSで同じ意見ばかりが共有され特定の考えが強化される現象","AIが学習データを際限なく増幅させる問題","フィルタリングで有害情報を自動排除する仕組み","クラウドサーバが地理的に分散配置される設計"], answer:0, explanation:"エコーチェンバー現象は、SNS などで自分と同じ意見ばかりが集まり・増幅し、特定の考えが固定化されてしまう現象。フィルターバブルとも関連する。" },
+      { id:"S016", category:"ストラテジ", question:"OMO（Online Merges with Offline）の説明として最も適切なものはどれか。", level1Choices:["オンラインとオフラインの垣根をなくして顧客体験を統合する戦略","店舗をすべて閉鎖しECサイトに移行すること","ネット販売を禁止して実店舗だけで販売すること","オフライン広告をオンライン広告に置き換えること"], level2Choices:["オンラインとオフラインの垣根をなくして顧客体験を統合する戦略","ECサイトに実店舗の写真を掲載すること","SNS広告を実店舗の看板に連携させること","オンライン決済を実店舗でも使えるようにするだけの取り組み"], level3Choices:["オンラインとオフラインの垣根をなくして顧客体験を統合する戦略","EC専業化によってコストを削減するビジネスモデル","店舗のデジタルサイネージ導入のみを指す概念","メタバース上に仮想店舗を構築するVR戦略"], answer:0, explanation:"OMO（Online Merges with Offline）は、オンラインとオフライン（実店舗）の境界をなくし、顧客にシームレスな体験を提供するマーケティング戦略。" },
+
+      // マネジメント 追加基本問題
+      { id:"M004", category:"マネジメント", question:"アジャイル開発の特徴として適切なものはどれか。", level1Choices:["短い反復を繰り返して開発を進める","工程を順番に一度だけ進める","最初に全要件を固定する","テストを最後にまとめて実施する"], level2Choices:["短い反復を繰り返して開発を進める","工程を順序どおり進める","変更を禁止してリスクを下げる","要件定義だけを繰り返す"], level3Choices:["短い反復を繰り返して開発を進める","工程を順序どおりに完遂する","最初に全仕様を確定させる","テストフェーズを独立して設ける"], answer:0, explanation:"アジャイル開発は、短い反復（スプリント）を繰り返しながら段階的に機能を提供する開発手法。変化への対応を重視する。" },
+      { id:"M005", category:"マネジメント", question:"ITサービスマネジメントの目的として適切なものはどれか。", level1Choices:["ITサービスの品質を継続的に向上させる","ハードウェアの製造コストを下げる","プログラムのバグをゼロにする","新しい言語を習得する"], level2Choices:["ITサービスの品質を継続的に向上させる","ネットワーク機器の設定を自動化する","開発言語の統一を図る","ユーザ数を増やす"], level3Choices:["ITサービスの品質を継続的に向上させる","ハードウェアの調達コストを削減する","ソフトウェアのバグを完全になくす","クラウド移行を義務付ける"], answer:0, explanation:"IT サービスマネジメントは、IT サービスの計画・設計・移行・運用・改善を通じて、サービス品質を継続的に向上させることを目的とする。" },
+      { id:"M006", category:"マネジメント", question:"プロジェクトのリスク管理で最初に行うべきことはどれか。", level1Choices:["リスクの識別","リスクへの対応実施","リスクの監視","リスクの受容決定"], level2Choices:["リスクの識別","リスクの定量評価だけ","リスク対応コストの確定","リスクの排除完了"], level3Choices:["リスクの識別","リスク対応の即時実施","リスクの定性評価のみ","リスク発生後の事後対応"], answer:0, explanation:"リスク管理プロセスでは、まずリスクを洗い出す「識別」を行い、その後に分析・評価・対応計画・監視という流れで進める。" },
+      { id:"M007", category:"マネジメント", question:"ITシステムの移行方式のうち、旧システムと新システムを一定期間並行稼働させるものはどれか。", level1Choices:["並行移行","一斉移行","段階移行","パイロット移行"], level2Choices:["並行移行","一斉切替移行","段階的移行","リハーサル移行"], level3Choices:["並行移行","一斉移行","段階移行","パイロット移行"], answer:0, explanation:"並行移行は、旧システムと新システムを一定期間同時に稼働させる移行方式。リスクは低いが、コストが二重にかかる。" },
+      { id:"M008", category:"マネジメント", question:"システム監査の目的として適切なものはどれか。", level1Choices:["情報システムのリスク管理状況を独立した立場で点検する","プログラムを高速化する","予算を削減する","機能を追加する"], level2Choices:["情報システムのリスク管理状況を独立した立場で点検する","システムの処理速度を測定する","開発コストを比較する","新機能の優先度を決める"], level3Choices:["情報システムのリスク管理状況を独立した立場で点検する","データベースの性能を改善する","UIのデザインを評価する","ライセンス費用を交渉する"], answer:0, explanation:"システム監査は、情報システムのリスク管理や内部統制の整備・運用状況を独立した立場で点検・評価すること。" },
+      { id:"M009", category:"マネジメント", question:"SLAの説明として適切なものはどれか。", level1Choices:["サービス提供者と利用者間で合意したサービスレベルの取決め","ソフトウェアのバグ修正を保証する契約","ハードウェアの耐用年数を定めた規格","ネットワーク速度の国際標準"], level2Choices:["サービス提供者と利用者間で合意したサービスレベルの取決め","開発コストの上限を定めた契約","保守担当者の資格要件","セキュリティ対策の実施手順"], level3Choices:["サービス提供者と利用者間で合意したサービスレベルの取決め","ソースコードの品質基準","クラウドの課金方式","システム移行の作業手順書"], answer:0, explanation:"SLA は Service Level Agreement の略。サービス提供者と利用者の間で合意した、提供するサービスの品質水準に関する取り決め。" },
+      { id:"M010", category:"マネジメント", question:"テスト駆動開発（TDD）の特徴として適切なものはどれか。", level1Choices:["テストを先に書いてから実装する","実装後にまとめてテストを書く","テストは専任チームだけが行う","テストを省略して速度を上げる"], level2Choices:["テストを先に書いてから実装する","設計書が完成後にテストを作成する","テストは運用開始後に行う","テスト自動化は禁止する"], level3Choices:["テストを先に書いてから実装する","後でリファクタリング時にテストを書く","テストカバレッジだけを測定する","受入テストのみを重視する"], answer:0, explanation:"TDD（Test-Driven Development）は、実装前にテストコードを先に書き、そのテストを通過させるよう実装を進める開発手法。" },
+      { id:"M011", category:"マネジメント", question:"MLOpsの説明として最も適切なものはどれか。", level1Choices:["機械学習モデルの開発から運用までを効率的に管理・自動化する手法","機械学習の研究だけを行うチームの体制","営業部門のKPIを機械学習で予測する仕組み","クラウドへの移行を機械学習で自動化するツール"], level2Choices:["機械学習モデルの開発から運用までを効率的に管理・自動化する手法","機械学習の学習データを収集するだけのプロセス","AIモデルのライセンスを管理する法的枠組み","機械学習専用のプログラミング言語"], level3Choices:["機械学習モデルの開発から運用までを効率的に管理・自動化する手法","機械学習モデルの精度評価だけを行うテスト手法","AIモデルの著作権管理を自動化する仕組み","ディープラーニングの計算コストを削減する最適化技術"], answer:0, explanation:"MLOps は Machine Learning Operations の略。機械学習モデルの開発・テスト・デプロイ・監視・再学習までを継続的に管理・自動化する手法。" },
+      { id:"M012", category:"マネジメント", question:"CI（継続的インテグレーション）の説明として最も適切なものはどれか。", level1Choices:["コードの変更を頻繁にリポジトリへ統合しビルド・テストを自動実行する手法","年に一度まとめて行うシステム統合テスト","部署間の業務プロセスを統合する手法","企業の情報システムを一本化するERP導入"],  level2Choices:["コードの変更を頻繁にリポジトリへ統合しビルド・テストを自動実行する手法","本番環境へのリリースを完全自動化する仕組み","開発チームと運用チームを組織的に統合すること","複数のサーバを仮想化して一本化する技術"], level3Choices:["コードの変更を頻繁にリポジトリへ統合しビルド・テストを自動実行する手法","完成品だけを月次でリポジトリに登録する開発手法","テスト工程を完全省略して開発速度を上げる手法","設計書と実装の一致を定期的に監査するプロセス"], answer:0, explanation:"CI（Continuous Integration）は、開発者がコードの変更を頻繁にリポジトリへ統合し、そのたびに自動でビルド・テストを実行する開発プラクティス。" },
+      { id:"M013", category:"マネジメント", question:"スクラム開発におけるスプリントの説明として最も適切なものはどれか。", level1Choices:["1〜4週間程度の短い開発反復サイクル","プロジェクト全体の開発期間","最終的な受入テストのフェーズ","要件定義から始まる最初の工程"], level2Choices:["1〜4週間程度の短い開発反復サイクル","毎日の朝会で実施するタスク確認","バックログの優先度を決める会議","プロダクトオーナーが行うレビュー"], level3Choices:["1〜4週間程度の短い開発反復サイクル","リリースまでの全工程を含む作業計画","コードレビューだけを行う期間","利害関係者向けデモンストレーション"], answer:0, explanation:"スクラムにおけるスプリントは、通常1〜4週間の短い反復開発サイクル。各スプリント終了時に動くプロダクトを提供することを目指す。" },
+      { id:"M014", category:"マネジメント", question:"AIOpsの説明として最も適切なものはどれか。", level1Choices:["ITシステムの運用管理にAIを活用して異常検知や自動対応を実現する手法","AIを使って採用面接を自動化する仕組み","AIで製品の品質検査を自動化する技術","クラウドのコスト最適化にAIを使うサービス"], level2Choices:["ITシステムの運用管理にAIを活用して異常検知や自動対応を実現する手法","ソフトウェア開発工程全体をAIが自動化する仕組み","AIが経営判断を代行するシステム","AI専門チームの組織運営モデル"], level3Choices:["ITシステムの運用管理にAIを活用して異常検知や自動対応を実現する手法","AIの学習データ品質を管理する運用フレームワーク","AIモデルのセキュリティ脆弱性を自動検出するツール","AI倫理審査を自動化する法的コンプライアンス手法"], answer:0, explanation:"AIOps は Artificial Intelligence for IT Operations の略。IT システムの運用にAIを適用し、膨大なログや監視データを分析して異常検知や自動対応を実現する。" },
+
+      // テクノロジ 追加基本問題
+      { id:"T006", category:"テクノロジ", question:"HTTPSの説明として適切なものはどれか。", level1Choices:["SSL/TLSで暗号化されたHTTP通信","暗号化なしの通常のHTTP通信","メール送受信プロトコル","ファイル転送プロトコル"], level2Choices:["SSL/TLSで暗号化されたHTTP通信","ユーザ認証専用のプロトコル","DNS名前解決プロトコル","IPアドレス自動割り当てプロトコル"], level3Choices:["SSL/TLSで暗号化されたHTTP通信","暗号なしのHTTP通信の別名","メール配信プロトコル","ルーティングプロトコル"], answer:0, explanation:"HTTPS は HTTP over SSL/TLS の略。SSL/TLS による暗号化を加えた HTTP 通信で、通信内容の盗聴や改ざんを防ぐ。" },
+      { id:"T007", category:"テクノロジ", question:"クラウドコンピューティングの説明として適切なものはどれか。", level1Choices:["ネットワーク経由でITリソースを提供する仕組み","PCを雲の形に配置する設計","自社データセンターのみで運用する形態","紙の文書を電子化すること"], level2Choices:["ネットワーク経由でITリソースを提供する仕組み","物理サーバを自社で必ず保有する形態","オフラインでだけ使えるサービス","ローカルエリアだけに限定したネットワーク"], level3Choices:["ネットワーク経由でITリソースを提供する仕組み","特定企業専用のオンプレミス環境","インターネット不要のシステム","ストレージのみを提供するサービス"], answer:0, explanation:"クラウドコンピューティングは、インターネットなどのネットワーク経由でコンピューティングリソースをサービスとして提供する仕組み。" },
+      { id:"T008", category:"テクノロジ", question:"SQLインジェクションの説明として適切なものはどれか。", level1Choices:["入力フォームから不正なSQL文を実行させる攻撃","パスワードを総当たりで試す攻撃","偽メールで認証情報を盗む攻撃","ネットワークに過負荷をかける攻撃"], level2Choices:["入力フォームから不正なSQL文を実行させる攻撃","パスワードリストを使い回す攻撃","通信を盗聴するだけの行為","マルウェアをメール添付で配布する攻撃"], level3Choices:["入力フォームから不正なSQL文を実行させる攻撃","フィッシングサイトへ誘導する攻撃","ランサムウェアを配布する攻撃","DNSの応答を書き換える攻撃"], answer:0, explanation:"SQL インジェクションは、入力フォームなどに不正な SQL 文を挿入し、データベースを不正に操作する攻撃手法。" },
+      { id:"T009", category:"テクノロジ", question:"CPUの役割として適切なものはどれか。", level1Choices:["プログラムの命令を解釈して実行する","データを永続的に保存する","ネットワーク通信だけを制御する","映像を表示するだけを担う"], level2Choices:["プログラムの命令を解釈して実行する","データの長期保存を専門に行う","入力装置の制御のみ担当する","音声の録音だけを行う"], level3Choices:["プログラムの命令を解釈して実行する","データを永続的に記憶する","ネットワーク回線の物理接続を管理する","グラフィックス描画だけを専担する"], answer:0, explanation:"CPU（Central Processing Unit）は、プログラムの命令を読み込み・解釈・実行するコンピュータの中心的な処理装置。" },
+      { id:"T010", category:"テクノロジ", question:"二要素認証の説明として適切なものはどれか。", level1Choices:["知識・所持・生体など異なる種類の認証要素を2つ以上組み合わせる","パスワードを2回入力させる","2種類の生体認証を組み合わせる","2台の端末で同時にログインする"], level2Choices:["知識・所持・生体など異なる種類の認証要素を2つ以上組み合わせる","同じパスワードを2つ設定する","秘密の質問を2問設定する","2段階のパスワード変更を行う"], level3Choices:["知識・所持・生体など異なる種類の認証要素を2つ以上組み合わせる","同一種類の要素を2回確認する","生体認証を2回繰り返す","PINコードを2段階に設定する"], answer:0, explanation:"二要素認証は、「知識（パスワード）」「所持（スマホ）」「生体（指紋）」など異なる種類の認証要素を 2 つ組み合わせる認証方式。" },
+      { id:"T011", category:"テクノロジ", question:"ファイアウォールの役割として適切なものはどれか。", level1Choices:["ネットワーク境界で不正な通信を遮断する","ウイルスをリアルタイムで検出・除去する","データを自動バックアップする","通信速度を向上させる"], level2Choices:["ネットワーク境界で不正な通信を遮断する","マルウェアをリアルタイム除去する","データの暗号化だけを行う","帯域幅を増やす"], level3Choices:["ネットワーク境界で不正な通信を遮断する","侵入の兆候を検知して通知する","証明書の発行・管理を行う","通信内容を圧縮する"], answer:0, explanation:"ファイアウォールは、ネットワークの境界で通信を監視し、定義されたルールに基づいて不正な通信を遮断するセキュリティ装置。" },
+      { id:"T012", category:"テクノロジ", question:"関係データベースにおけるNULLの意味として適切なものはどれか。", level1Choices:["値が存在しないまたは不明であることを示す","ゼロと同じ意味","空文字列と同じ意味","エラーが発生したことを示す"], level2Choices:["値が存在しないまたは不明であることを示す","数値の0と等価","空白文字と等価","禁止されたデータ型を示す"], level3Choices:["値が存在しないまたは不明であることを示す","0と同義の特殊値","空文字列と同義","未初期化変数を意味する"], answer:0, explanation:"NULL は、関係データベースにおいて「値が存在しない」または「不明・未定義」であることを示す特殊な状態を表す。0 や空文字とは異なる。" },
+      { id:"T013", category:"テクノロジ", question:"ハルシネーション（幻覚）の説明として最も適切なものはどれか。", level1Choices:["生成AIが事実と異なる情報をもっともらしく生成してしまう現象","AIがシステムエラーを起こして停止する現象","機械学習モデルが過学習して精度が下がる現象","AIが悪意ある入力によって不正動作する攻撃"], level2Choices:["生成AIが事実と異なる情報をもっともらしく生成してしまう現象","AIの計算処理が遅延してタイムアウトが発生する問題","データ不足によって学習が進まない状態","AIモデルのバージョン管理が失敗する現象"], level3Choices:["生成AIが事実と異なる情報をもっともらしく生成してしまう現象","AIが同じ回答を繰り返し出力するループ問題","学習データの偏りによって特定グループに不公平な結果を出す問題","AIが入力された個人情報を外部に漏洩させる脆弱性"], answer:0, explanation:"ハルシネーション（幻覚）とは、生成AI が事実と異なる情報や根拠のない内容を、もっともらしい文章として出力してしまう現象。情報の正確性確認が重要。" },
+      { id:"T014", category:"テクノロジ", question:"プロンプトエンジニアリングの説明として最も適切なものはどれか。", level1Choices:["AIから意図した回答を引き出すために入力文を設計・最適化する技術","AIのハードウェア性能を向上させるエンジニアリング手法","プログラムのバグを自動修正するAI活用手法","AIモデル自体のアーキテクチャを設計する技術"], level2Choices:["AIから意図した回答を引き出すために入力文を設計・最適化する技術","AIの学習データを収集・整理する前処理手法","AIシステムのセキュリティを強化するエンジニアリング","機械学習モデルの評価指標を定義する手法"], level3Choices:["AIから意図した回答を引き出すために入力文を設計・最適化する技術","AIモデルの重みパラメータを手動で調整する技術","大規模言語モデルを独自データで再訓練する手法","AIの出力を自動的に検閲・フィルタリングするシステム"], answer:0, explanation:"プロンプトエンジニアリングとは、生成 AI に対して適切な指示（プロンプト）を設計・最適化することで、意図した高品質な回答を引き出す技術。" },
+      { id:"T015", category:"テクノロジ", question:"XAI（説明可能なAI）の説明として最も適切なものはどれか。", level1Choices:["AIがなぜその推論結果に至ったかを人間が理解できるように説明できるAI","AIが自律的に新しいAIを設計・生成する技術","人間の指示なしに自己学習を続けるAI","高速処理を可能にしたスーパーコンピュータ上のAI"], level2Choices:["AIがなぜその推論結果に至ったかを人間が理解できるように説明できるAI","AIの計算コストを最小化して説明する手法","人間の言語を完全に理解するAIの段階","AIの誤りを自動で修正する自己修復機能"], level3Choices:["AIがなぜその推論結果に至ったかを人間が理解できるように説明できるAI","高精度な翻訳を実現するニューラル機械翻訳の総称","ユーザの感情を理解して応答するEQ搭載AI","複数のAIモデルを組み合わせて精度を向上させるアンサンブル学習"], answer:0, explanation:"XAI（Explainable AI）は、AIがどのような根拠で推論・判断したかを人間が理解できる形で説明できる AI 技術。医療・金融・法律など高リスク分野での信頼性向上に重要。" },
+      { id:"T016", category:"テクノロジ", question:"ディープフェイクの説明として最も適切なものはどれか。", level1Choices:["AI技術で実在しない映像や音声を本物のように偽造・合成する技術","インターネットの深部に存在する違法コンテンツ","AI同士が対戦して学習するゲーム理論手法","深層学習のモデルが過学習する問題"], level2Choices:["AI技術で実在しない映像や音声を本物のように偽造・合成する技術","ダークウェブ上の偽造ドキュメント販売サービス","AIによるフィッシングメール自動作成ツール","機密データを深く暗号化する手法"], level3Choices:["AI技術で実在しない映像や音声を本物のように偽造・合成する技術","ディープラーニングで発見された未知のバグパターン","AIモデルの重みを深く圧縮して軽量化する技術","量子コンピュータを使った偽造防止技術"], answer:0, explanation:"ディープフェイクとは、ディープラーニングを用いて、人物の顔や音声を別人に置き換えた偽の映像・音声を本物そっくりに生成する技術。フェイクニュースや詐欺への悪用が社会問題となっている。" },
+      { id:"T017", category:"テクノロジ", question:"クレデンシャルスタッフィング攻撃の説明として最も適切なものはどれか。", level1Choices:["漏洩したIDとパスワードのリストを使って他サービスへの不正ログインを試みる攻撃","パスワードを総当たりで試すブルートフォース攻撃","偽サイトに誘導して認証情報を盗むフィッシング攻撃","通信を傍受してセッション情報を盗む中間者攻撃"], level2Choices:["漏洩したIDとパスワードのリストを使って他サービスへの不正ログインを試みる攻撃","特定ユーザのパスワードを辞書ワードで試す辞書攻撃","URLを偽装してマルウェアをダウンロードさせる攻撃","ソーシャルエンジニアリングで電話口から認証情報を聞き出す攻撃"], level3Choices:["漏洩したIDとパスワードのリストを使って他サービスへの不正ログインを試みる攻撃","DDoS攻撃でログイン画面を停止させる攻撃","認証トークンを複製してセッションを乗っ取る攻撃","AIで本人になりすましたビデオ通話で認証を突破する攻撃"], answer:0, explanation:"クレデンシャルスタッフィングは、過去のデータ漏洩で入手した ID とパスワードの組み合わせリストを、別のサービスに大量に試して不正ログインを図る攻撃。パスワード使い回しが被害を拡大させる。" },
+      { id:"T018", category:"テクノロジ", question:"EDR（Endpoint Detection and Response）の説明として最も適切なものはどれか。", level1Choices:["PCやサーバの挙動を監視しサイバー攻撃を検知・対応する技術","ネットワーク境界で不正通信を遮断するファイアウォール","ウイルスの定義ファイルを照合して既知マルウェアを検出するソフト","メールの添付ファイルを自動的に隔離する仕組み"], level2Choices:["PCやサーバの挙動を監視しサイバー攻撃を検知・対応する技術","外部からの侵入だけを防ぐペリメータセキュリティ装置","エンドユーザのパスワードを一元管理するID管理システム","クラウド上のデータ暗号化を専門とするサービス"], level3Choices:["PCやサーバの挙動を監視しサイバー攻撃を検知・対応する技術","ネットワークトラフィック全体を記録するパケットキャプチャツール","エンドポイントの脆弱性スキャンだけを行うアセスメントツール","VPN接続時の認証を強化する多要素認証デバイス"], answer:0, explanation:"EDR（Endpoint Detection and Response）は、PC・サーバなどエンドポイントの動作をリアルタイムで監視し、不審なふるまいを検知して対応する技術。従来のウイルス対策ソフトでは検知困難な未知の脅威にも有効。" },
+      { id:"T019", category:"テクノロジ", question:"プロンプトインジェクション攻撃の説明として最も適切なものはどれか。", level1Choices:["生成AIに悪意ある指示を入力して制限を回避させ不正操作を誘発する攻撃","SQLデータベースに不正な命令文を注入する攻撃","注射器型デバイスをUSBポートに接続して行うハードウェア攻撃","ネットワークパケットに不正なコードを埋め込む攻撃"], level2Choices:["生成AIに悪意ある指示を入力して制限を回避させ不正操作を誘発する攻撃","Webフォームに不正なHTML/JavaScriptを入力するXSS攻撃","コマンドラインインタフェースに不正なシェルコマンドを実行させる攻撃","APIエンドポイントに大量リクエストを送るDoS攻撃"], level3Choices:["生成AIに悪意ある指示を入力して制限を回避させ不正操作を誘発する攻撃","言語モデルの訓練データに有害な内容を混入させるデータポイゾニング","AIが生成したコードに隠された脆弱性を悪用するサプライチェーン攻撃","モデルの重みを逆算して訓練データを復元するモデル逆転攻撃"], answer:0, explanation:"プロンプトインジェクション攻撃とは、生成 AI に悪意ある指示（プロンプト）を入力し、本来の安全制限を回避させて有害な情報の出力や不正操作を引き起こす攻撃手法。" },
+      { id:"T020", category:"テクノロジ", question:"3-2-1ルール（データバックアップ原則）の内容として最も適切なものはどれか。", level1Choices:["3つのコピー・2種類のメディア・1つはオフサイト保管","3日ごと・2週間保持・1か月で削除","3世代・2重暗号化・1時間ごとに取得","3拠点・2チーム・1システムで管理"], level2Choices:["3つのコピー・2種類のメディア・1つはオフサイト保管","週3回・月2回・年1回の取得頻度","3つの暗号化方式・2種の認証・1つの鍵管理","可用性・完全性・機密性の3原則を2段階で1回確認"], level3Choices:["3つのコピー・2種類のメディア・1つはオフサイト保管","RPO・RTO・RPAの3指標を2段階で評価し1時間以内に復旧","3層防御・2ファクタ認証・1次インシデント対応の組み合わせ","クラウド・オンプレ・テープの3媒体を2ベンダーで1拠点管理"], answer:0, explanation:"3-2-1 ルールはデータバックアップの原則。「3 つのコピーを作成」「2 種類の異なるメディアに保存」「1 つはオフサイト（遠隔地）に保管」することでランサムウェアや災害からデータを守る。" },
+
+      { id:"L3S001", category:"ストラテジ", level3Only:true, question:"3C分析の対象として適切な組合せはどれか。", level3Choices:["Customer・Competitor・Company","Customer・Cost・Company","Company・Capability・Customer","Competitor・Channel・Company"], answer:0, explanation:"3C分析は Customer（顧客）・Competitor（競合）・Company（自社）の3要素を分析する手法。" },
+      { id:"L3S002", category:"ストラテジ", level3Only:true, question:"PPMで『問題児』に当たるものはどれか。", level3Choices:["市場成長率は高いが市場占有率は低い事業","市場成長率も市場占有率も高い事業","市場成長率は低いが市場占有率は高い事業","市場成長率も市場占有率も低い事業"], answer:0, explanation:"PPM は Product Portfolio Management の略。市場成長率と市場占有率で事業を分類する手法で、問題児は市場成長率が高く市場占有率が低い事業。" },
+      { id:"L3S003", category:"ストラテジ", level3Only:true, question:"BPRと最も区別すべき概念はどれか。", level3Choices:["既存業務の単純な電子化","業務プロセスの抜本的見直し","組織横断の業務再設計","業務価値の再定義"], answer:0, explanation:"BPR は Business Process Reengineering の略。業務プロセスを抜本的に見直す考え方であり、単なる電子化とは異なる。" },
+      { id:"L3S004", category:"ストラテジ", level3Only:true, question:"ROIの説明として最も適切なものはどれか。", level3Choices:["投資額に対して得られた利益の割合","売上高に対する営業利益の割合","自己資本に対する当期純利益の割合","総資産に対する売上高の割合"], answer:0, explanation:"ROI は Return On Investment の略。投資額に対してどれだけ利益を得られたかを示す指標。" },
+      { id:"L3S005", category:"ストラテジ", level3Only:true, question:"KGIの説明として最も適切なものはどれか。", level3Choices:["最終的に達成すべき目標指標","目標達成の途中経過を測る指標","現場作業の工数を測る指標","障害件数を自動収集する指標"], answer:0, explanation:"KGI は Key Goal Indicator の略。最終的に達成すべき目標を示す指標であり、途中経過を測る KPI と区別する。" },
+      { id:"L3S006", category:"ストラテジ", level3Only:true, question:"SaaSと比べたPaaSの特徴として適切なものはどれか。", level3Choices:["アプリ開発・実行環境を提供する","完成済み業務アプリをそのまま使う","物理サーバの所有権を利用者へ移す","ネットワーク回線そのものを提供する"], answer:0, explanation:"PaaS は Platform as a Service の略。アプリケーションの開発・実行環境を提供する。SaaS は Software as a Service で、完成済みソフトを利用する形態。" },
+      { id:"L3S007", category:"ストラテジ", level3Only:true, question:"アライアンス戦略の説明として適切なものはどれか。", level3Choices:["他社と提携し相互補完を図ること","競合をすべて買収すること","社内業務をすべて内製化すること","市場から完全撤退すること"], answer:0, explanation:"アライアンス戦略は、他社と提携して互いの強みを補完し、競争力を高める戦略。" },
+      { id:"L3S008", category:"ストラテジ", level3Only:true, question:"CRMの活用例として最も適切なものはどれか。", level3Choices:["顧客購買履歴を基にした提案強化","社内会計処理の統合","原材料調達から物流までの最適化","業務フローの抜本的再設計"], answer:0, explanation:"CRM は Customer Relationship Management の略。顧客との関係を管理し、購買履歴などを活用して提案や対応を強化する考え方。" },
+      { id:"L3S009", category:"ストラテジ", level3Only:true, question:"個人情報保護の観点で最も不適切なものはどれか。", level3Choices:["利用目的を曖昧にしたまま広く収集する","必要最小限の取得にとどめる","アクセス権を限定する","不要になった情報を削除する"], answer:0, explanation:"個人情報は利用目的を明確にし、必要最小限だけ取得するのが基本。目的を曖昧にしたまま広く収集するのは不適切。" },
+      { id:"L3S010", category:"ストラテジ", level3Only:true, question:"著作権で通常保護されにくいものはどれか。", level3Choices:["アイデアそのもの","創作的に表現された文章","独自デザインのイラスト","創作的な音楽作品"], answer:0, explanation:"著作権は表現を保護するものであり、アイデアそのものは通常保護されにくい。" },
+      { id:"L3S011", category:"ストラテジ", level3Only:true, question:"ニッチ戦略の説明として適切なものはどれか。", level3Choices:["特定の狭い市場に集中する","市場全体を一気に支配する","価格だけで全方位競争する","競争を避けるため販売を停止する"], answer:0, explanation:"ニッチ戦略は、特定の狭い市場に集中して強みを発揮する戦略。" },
+      { id:"L3S012", category:"ストラテジ", level3Only:true, question:"リスキリングの説明として適切なものはどれか。", level3Choices:["新しい職務に対応するために学び直すこと","一度学んだ内容を固定化すること","資格試験の受験だけを指すこと","評価制度を見直すこと"], answer:0, explanation:"リスキリングは、職務の変化に対応するために新しい知識や技能を学び直すこと。" },
+      { id:"L3S013", category:"ストラテジ", level3Only:true, question:"サブスクリプション方式の特徴として適切なものはどれか。", level3Choices:["継続課金で利用権を得る","初回購入だけで永久所有する","利用量に関係なく資産計上される","必ずオフライン限定で使う"], answer:0, explanation:"サブスクリプション方式は、継続課金によって一定期間の利用権を得る方式。" },
+      { id:"L3S014", category:"ストラテジ", level3Only:true, question:"IoTの活用例として最も適切なものはどれか。", level3Choices:["センサ付き機器がネット経由で状態送信する","紙文書をPDF化して共有する","営業報告を表計算で集計する","Web会議で画面共有する"], answer:0, explanation:"IoT は Internet of Things の略。モノにセンサや通信機能を持たせて、ネットワーク経由で情報をやり取りする仕組み。" },
+      { id:"L3S015", category:"ストラテジ", level3Only:true, question:"ビッグデータの特徴として不適切なものはどれか。", level3Choices:["必ず構造化データだけで構成される","大量である","多様である","高速に生成・処理される"], answer:0, explanation:"ビッグデータは大量・多様・高速性が特徴であり、構造化データだけでなく非構造化データも含む。" },
+      { id:"L3S016", category:"ストラテジ", level3Only:true, question:"BtoBの説明として適切なものはどれか。", level3Choices:["企業対企業の取引","企業対消費者の取引","消費者対消費者の取引","行政対企業の取引"], answer:0, explanation:"BtoB は Business to Business の略。企業と企業の間で行われる取引を指す。" },
+      { id:"L3S017", category:"ストラテジ", level3Only:true, question:"CBDC（中央銀行デジタル通貨）の説明として適切なものはどれか。", level3Choices:["中央銀行が発行する法定通貨のデジタル版","民間企業が発行するビットコインなどの暗号資産","クレジットカード会社が提供するポイント通貨","外国為替市場で取引されるデジタル決済手段"], answer:0, explanation:"CBDC（Central Bank Digital Currency）は、中央銀行が発行するデジタル形式の法定通貨。現金のデジタル版として各国が研究・導入を進めている。" },
+      { id:"L3S018", category:"ストラテジ", level3Only:true, question:"人的資本経営の説明として適切なものはどれか。", level3Choices:["従業員を資本と捉え能力開発に投資して企業価値を高める経営","人件費をできるだけ削減して利益を最大化する経営","採用人数を最大化して組織規模を拡大する戦略","人事評価制度を廃止してフラットな組織を実現する手法"], answer:0, explanation:"人的資本経営とは、従業員を「資本」と捉え、その能力・意欲・多様性に投資することで企業価値や競争力を高める経営手法。非財務情報開示との関連でも注目される。" },
+      { id:"L3S019", category:"ストラテジ", level3Only:true, question:"GX（グリーントランスフォーメーション）の説明として適切なものはどれか。", level3Choices:["化石燃料から脱却し社会全体を脱炭素化へ転換すること","IT技術で農業を効率化するスマート農業","工場の緑化推進と植樹活動","グリーンITと同義であり省エネPC普及のこと"], answer:0, explanation:"GX（Green Transformation）は、化石燃料に依存する社会経済システムをクリーンエネルギー中心に転換させる取り組み。カーボンニュートラル実現を目指す。" },
+      { id:"L3S020", category:"ストラテジ", level3Only:true, question:"忘れられる権利（消去権）の説明として適切なものはどれか。", level3Choices:["ネット上の自分に関する情報の削除を求めることができる権利","過去の犯罪歴を公的記録から消す権利","不要な広告メールを削除する権利","クラウド上のファイルを完全に削除する技術的操作"], answer:0, explanation:"忘れられる権利（消去権）とは、インターネット上に残存する自分に関する個人情報の削除をサービス事業者等に求めることができる権利。GDPR などで法制化が進む。" },
+      { id:"L3S021", category:"ストラテジ", level3Only:true, question:"デジタルタトゥーの説明として最も適切なものはどれか。", level3Choices:["一度ネット上に公開した情報が半永久的に残り続ける問題","皮膚にICチップを埋め込むウェアラブル技術","デジタル署名に使われる電子証明書","SNSアカウントのアバター画像設定"], answer:0, explanation:"デジタルタトゥーとは、一度インターネット上に投稿・公開した情報は完全に消し去ることが難しく、半永久的に残り続けるという問題。特に未成年者のSNS利用リスクとして社会問題化している。" },
+      { id:"L3S022", category:"ストラテジ", level3Only:true, question:"フィルターバブルの説明として最も適切なものはどれか。", level3Choices:["AIが個人の好みに合わせた情報だけを表示し異なる意見に触れにくくなる現象","Webブラウザの広告ブロック機能","メールのスパムフィルタリング機能","ファイアウォールが特定サイトをブロックする機能"], answer:0, explanation:"フィルターバブルとは、検索エンジンや SNS のアルゴリズムが個人の好みに合わせた情報ばかりを表示することで、異なる意見や視点に触れにくくなる現象。エコーチェンバーと類似する概念。" },
+
+      { id:"L3M001", category:"マネジメント", level3Only:true, question:"PERT図で主に把握したいものはどれか。", level3Choices:["作業順序と依存関係","売上高の推移","社員評価の分布","セキュリティ脅威の分類"], answer:0, explanation:"PERT は Program Evaluation and Review Technique の略。作業順序や依存関係を把握するために使う手法。" },
+      { id:"L3M002", category:"マネジメント", level3Only:true, question:"クリティカルパス上の作業が遅れるとどうなるか。", level3Choices:["全体納期に遅れが生じる可能性が高い","費用だけが増えて納期には影響しない","品質だけが下がり納期には影響しない","他作業が自動的に前倒しされる"], answer:0, explanation:"クリティカルパスは、プロジェクト全体の最短完了期間を決める経路。ここが遅れると全体納期に影響しやすい。" },
+      { id:"L3M003", category:"マネジメント", level3Only:true, question:"構成管理の対象として最も適切なものはどれか。", level3Choices:["プログラムや設計書の版と状態","顧客満足度の推移","従業員の健康状態","広告効果の測定結果"], answer:0, explanation:"構成管理は、プログラムや設計書など成果物の版（バージョン）や状態を管理すること。" },
+      { id:"L3M004", category:"マネジメント", level3Only:true, question:"リリース管理の主目的として適切なものはどれか。", level3Choices:["変更を適切な手順で本番環境へ反映すること","要件を定義すること","社員教育を行うこと","監査証跡を削除すること"], answer:0, explanation:"リリース管理は、変更を適切な手順で安全に本番環境へ反映することが目的。" },
+      { id:"L3M005", category:"マネジメント", level3Only:true, question:"インシデント管理と問題管理の違いとして適切なものはどれか。", level3Choices:["インシデント管理は早期復旧、問題管理は根本原因の除去","両方ともまったく同じ","問題管理は問い合わせ受付だけを行う","インシデント管理は監査だけを行う"], answer:0, explanation:"インシデント管理はサービスの早期復旧を目的とし、問題管理は根本原因を分析して再発防止を図る。" },
+      { id:"L3M006", category:"マネジメント", level3Only:true, question:"受入テストを主に行う立場として適切なのはどれか。", level3Choices:["利用者側","CPU製造部門","法務部門","経営企画部門のみ"], answer:0, explanation:"受入テストは、利用者側が要件どおりに使えるかを確認する段階。" },
+      { id:"L3M007", category:"マネジメント", level3Only:true, question:"単体テストの後に行うことが一般的なのはどれか。", level3Choices:["結合テスト","受入テスト","監査","BCP策定"], answer:0, explanation:"一般に、単体テストの後は結合テスト、その後にシステムテストや受入テストへ進む。" },
+      { id:"L3M008", category:"マネジメント", level3Only:true, question:"ガントチャートが得意なことはどれか。", level3Choices:["スケジュールの可視化","データベース正規化","暗号方式の分類","IPアドレスの解決"], answer:0, explanation:"ガントチャートは、作業期間や進捗を時間軸で可視化するのに向いている。" },
+      { id:"L3M009", category:"マネジメント", level3Only:true, question:"RPOを短くするために重要なのはどれか。", level3Choices:["バックアップや複製の頻度向上","画面解像度の向上","CPUクロックの向上","帳票デザインの改善"], answer:0, explanation:"RPO は Recovery Point Objective の略。どの時点までデータを戻せればよいかという目標時点を表し、短くするにはバックアップや複製の頻度向上が重要。" },
+      { id:"L3M010", category:"マネジメント", level3Only:true, question:"RTOを短くする対策として適切なのはどれか。", level3Choices:["復旧手順の整備と訓練","営業会議の頻度増加","文書の装飾改善","ファイル名の統一だけ"], answer:0, explanation:"RTO は Recovery Time Objective の略。復旧までの目標時間を表し、短縮には復旧手順の整備や訓練が有効。" },
+      { id:"L3M011", category:"マネジメント", level3Only:true, question:"ベンダ管理の目的として適切なものはどれか。", level3Choices:["委託先の品質や納期を適切に管理する","委託すれば責任をなくす","契約を不要にする","社内規程を無視する"], answer:0, explanation:"ベンダ管理は、委託先の品質・納期・契約履行状況を適切に管理することが目的。委託しても責任は消えない。" },
+      { id:"L3M012", category:"マネジメント", level3Only:true, question:"ステークホルダ管理で重要なのはどれか。", level3Choices:["関係者の期待や利害を調整すること","関係者を無視して速度を優先すること","仕様を秘密にすること","全員に同じ権限を与えること"], answer:0, explanation:"ステークホルダ管理では、関係者の期待や利害を把握し、調整することが重要。" },
+      { id:"L3M013", category:"マネジメント", level3Only:true, question:"変更要求を管理せずに即時反映するリスクとして最も適切なものはどれか。", level3Choices:["影響範囲不明のまま品質低下を招く","必ず納期短縮になる","常に費用が減る","関係者調整が不要になる"], answer:0, explanation:"変更要求を管理せずに反映すると、影響範囲が不明なまま品質低下や障害を招きやすい。" },
+      { id:"L3M014", category:"マネジメント", level3Only:true, question:"レビューの効果として最も適切なものはどれか。", level3Choices:["早期に欠陥を見つけ手戻りを減らす","後工程の工数を必ずゼロにする","テストを不要にする","契約を不要にする"], answer:0, explanation:"レビューは、早い段階で欠陥を発見し、手戻りコストを減らす効果がある。" },
+      { id:"L3M015", category:"マネジメント", level3Only:true, question:"スコープ管理で明確にすべきことはどれか。", level3Choices:["何をやるか、何をやらないか","誰を昇進させるか","何色のUIにするかだけ","毎日の出社人数だけ"], answer:0, explanation:"スコープ管理では、プロジェクトで何をやるか、何をやらないかを明確にすることが重要。" },
+      { id:"L3M016", category:"マネジメント", level3Only:true, question:"品質保証の考え方として適切なのはどれか。", level3Choices:["品質を工程で作り込む","最後にまとめて祈る","運用開始後にだけ考える","利用者責任にする"], answer:0, explanation:"品質保証では、最後にまとめて確認するのではなく、各工程で品質を作り込むことが重要。" },
+      { id:"L3M017", category:"マネジメント", level3Only:true, question:"障害対応後に再発防止を図る活動として適切なのはどれか。", level3Choices:["根本原因分析","広告出稿","採用面接","棚卸し"], answer:0, explanation:"再発防止には、表面的な対処ではなく根本原因分析が重要。" },
+      { id:"L3M018", category:"マネジメント", level3Only:true, question:"SLO（Service Level Objective）の説明として適切なものはどれか。", level3Choices:["SLAで定めたサービス品質の具体的な目標値","サービス提供者と利用者が締結する契約書全体","障害発生時に支払う損害賠償の上限額","サービス改善に向けたロードマップ文書"], answer:0, explanation:"SLO（Service Level Objective）は、SLA（サービスレベル合意）の中で定められるサービス品質の具体的な目標値。例：「可用性99.9%以上」。測定指標はSLI（Service Level Indicator）と呼ぶ。" },
+      { id:"L3M019", category:"マネジメント", level3Only:true, question:"スクラムにおけるプロダクトバックログの説明として適切なものはどれか。", level3Choices:["プロダクトに必要な機能や要件を優先度順に並べたリスト","スプリント期間中に完了すべきタスクの一覧","各開発者の日々の作業進捗を記録する日誌","スプリントレビューで使用するデモ用シナリオ"], answer:0, explanation:"プロダクトバックログは、スクラムにおいてプロダクトオーナーが管理する、プロダクトに必要な機能・要件・改善事項を優先度順に並べたリスト。スプリントの計画に使われる。" },
+      { id:"L3M020", category:"マネジメント", level3Only:true, question:"デブサロプス（DevOps）の説明として適切なものはどれか。", level3Choices:["開発チームと運用チームが連携して継続的にソフトウェアを改善する手法","開発者が運用作業を一切行わないように分業する体制","ウォーターフォール開発を厳密に適用した開発プロセス","ソフトウェアのリリースを年1回に限定して安定性を高める手法"], answer:0, explanation:"DevOps は Development（開発）と Operations（運用）を組み合わせた概念。開発チームと運用チームが協力し、CI/CD などを活用して迅速かつ継続的にソフトウェアを改善・デリバリーする手法。" },
+
+      { id:"L3T001", category:"テクノロジ", level3Only:true, question:"外部キーの説明として最も適切なものはどれか。", level3Choices:["他の表の主キーなどを参照して関連を表す列","各行を一意に識別する列","必ず索引が作られる列","データ型を決定する列"], answer:0, explanation:"外部キーは、他の表の主キーなどを参照して表同士の関連を表す列。主キーとは役割が異なる。" },
+      { id:"L3T002", category:"テクノロジ", level3Only:true, question:"正規化の主目的として最も適切なものはどれか。", level3Choices:["重複や更新不整合の低減","検索速度の最大化","表の数の最小化","暗号化の実現"], answer:0, explanation:"正規化の主目的は、データの重複や更新不整合を減らし、整合性を保ちやすくすること。" },
+      { id:"L3T003", category:"テクノロジ", level3Only:true, question:"MACアドレスの説明として適切なのはどれか。", level3Choices:["ネットワーク機器に割り当てられる識別情報","ドメイン名に対応する論理アドレス","Web資源の場所を示す記述","通信内容を暗号化する鍵"], answer:0, explanation:"MACアドレスは、ネットワークインタフェースに割り当てられる固有の識別情報。" },
+      { id:"L3T004", category:"テクノロジ", level3Only:true, question:"URLの説明として最も適切なものはどれか。", level3Choices:["Web上の資源の場所を表す記述","機器の物理アドレス","利用者認証情報","ドメイン名をIPに変換した結果"], answer:0, explanation:"URL は Uniform Resource Locator の略。Web 上の資源の場所を表す記述。" },
+      { id:"L3T005", category:"テクノロジ", level3Only:true, question:"ルータと比較したスイッチの説明として適切なのはどれか。", level3Choices:["同一ネットワーク内でフレーム転送を行う","異なるネットワーク間を中継する","通信内容を暗号化する","DNS名前解決を行う"], answer:0, explanation:"スイッチは一般に同一ネットワーク内でフレーム転送を行い、ルータは異なるネットワーク間を中継する。" },
+      { id:"L3T006", category:"テクノロジ", level3Only:true, question:"VPNの説明として最も適切なものはどれか。", level3Choices:["公衆回線上で安全な仮想専用線のように通信する仕組み","物理的な専用回線そのもの","DNSによる名前解決の仕組み","MACアドレスを隠す仕組み"], answer:0, explanation:"VPN は Virtual Private Network の略。公衆回線上で安全な仮想専用線のように通信する仕組み。" },
+      { id:"L3T007", category:"テクノロジ", level3Only:true, question:"ファイアウォールと比べたIDSの説明として適切なのはどれか。", level3Choices:["不正侵入の兆候を検知する仕組み","通信を遮断する境界制御の仕組み","データを圧縮する仕組み","暗号鍵を発行する仕組み"], answer:0, explanation:"IDS は Intrusion Detection System の略。不正侵入の兆候を検知する仕組みで、通信を制御するファイアウォールとは役割が異なる。" },
+      { id:"L3T008", category:"テクノロジ", level3Only:true, question:"共通鍵暗号と比べた公開鍵暗号の特徴として適切なのはどれか。", level3Choices:["暗号化と復号に異なる鍵を使う","暗号化と復号に同じ鍵を使う","復号できない要約値を作る","通信圧縮だけを行う"], answer:0, explanation:"公開鍵暗号は暗号化と復号に異なる鍵を使い、共通鍵暗号は同じ鍵を使う。" },
+      { id:"L3T009", category:"テクノロジ", level3Only:true, question:"ハッシュ関数と暗号化の違いとして適切なのはどれか。", level3Choices:["ハッシュは原則として元に戻すことを前提としない","ハッシュは必ず復号できる","暗号化は要約値しか作れない","両者に違いはない"], answer:0, explanation:"ハッシュ関数は原則として元に戻すことを前提としない一方向の変換であり、暗号化は復号を前提とする。" },
+      { id:"L3T010", category:"テクノロジ", level3Only:true, question:"デジタル署名と暗号化の違いとして適切なのはどれか。", level3Choices:["署名は本人性と完全性確認が主目的","署名は機密性確保が唯一の目的","暗号化は本人確認だけを行う","両者は完全に同じ処理である"], answer:0, explanation:"デジタル署名は本人性と完全性の確認が主目的であり、暗号化は主に機密性の確保が目的。" },
+      { id:"L3T011", category:"テクノロジ", level3Only:true, question:"生体認証に当たらないものはどれか。", level3Choices:["ワンタイムパスワード","指紋認証","虹彩認証","顔認証"], answer:0, explanation:"ワンタイムパスワードは知識・所持などに基づく認証であり、生体認証ではない。" },
+      { id:"L3T012", category:"テクノロジ", level3Only:true, question:"多要素認証の具体例として適切なのはどれか。", level3Choices:["パスワードとスマホアプリ認証を組み合わせる","パスワードを2回入力させる","秘密の質問を3つ設定する","同じPINを長くする"], answer:0, explanation:"多要素認証は、知識・所持・生体など異なる種類の認証要素を組み合わせること。" },
+      { id:"L3T013", category:"テクノロジ", level3Only:true, question:"ランサムウェアの説明として適切なのはどれか。", level3Choices:["データを利用不能にして身代金を要求する","利用者行動を分析して広告表示する","自己増殖だけを目的とする","通信経路を暗号化する"], answer:0, explanation:"ランサムウェアは、データを暗号化するなどして利用不能にし、身代金を要求するマルウェア。" },
+      { id:"L3T014", category:"テクノロジ", level3Only:true, question:"スパイウェアの説明として適切なのはどれか。", level3Choices:["利用者情報を密かに収集するマルウェア","自己増殖のみを行うマルウェア","画面上に身代金要求を出すマルウェア","OSの起動を助けるプログラム"], answer:0, explanation:"スパイウェアは、利用者情報を密かに収集するマルウェア。" },
+      { id:"L3T015", category:"テクノロジ", level3Only:true, question:"ワームの説明として適切なのはどれか。", level3Choices:["自己増殖して拡散するマルウェア","情報を盗むだけのマルウェア","広告表示だけを行うプログラム","利用者が手動でしか広げられないもの"], answer:0, explanation:"ワームは、自己増殖しながらネットワークなどを通じて拡散するマルウェア。" },
+      { id:"L3T016", category:"テクノロジ", level3Only:true, question:"フィッシング詐欺の手口として典型的なのはどれか。", level3Choices:["偽サイトへ誘導して認証情報を入力させる","CPUクロックを下げて処理遅延を起こす","紙文書を盗み見る","LANケーブルを抜く"], answer:0, explanation:"フィッシング詐欺は、偽メールや偽サイトへ誘導し、ID・パスワードなどの認証情報を入力させて盗み取る手口。" },
+      { id:"L3T017", category:"テクノロジ", level3Only:true, question:"キャッシュの役割として最も適切なのはどれか。", level3Choices:["よく使うデータを一時保持して高速化する","障害復旧用に長期保存する","通信内容を暗号化する","アクセス権を制御する"], answer:0, explanation:"キャッシュは、よく使うデータを一時保持してアクセスを高速化する仕組み。" },
+      { id:"L3T018", category:"テクノロジ", level3Only:true, question:"バックアップの主目的として最も適切なのはどれか。", level3Choices:["障害や誤操作から復元できるようにする","障害発生を完全に防ぐ","常に処理速度を上げる","認証を強化する"], answer:0, explanation:"バックアップの主目的は、障害や誤操作が起きた際にデータやシステムを復元できるようにすること。" },
+      { id:"L3T019", category:"テクノロジ", level3Only:true, question:"可逆圧縮の特徴として適切なのはどれか。", level3Choices:["元データに完全に戻せる","一部情報が失われる","暗号鍵がないと展開できない","必ず画像専用である"], answer:0, explanation:"可逆圧縮は、圧縮後に元データへ完全に戻せる圧縮方式。" },
+      { id:"L3T020", category:"テクノロジ", level3Only:true, question:"RAMと比べたROMの特徴として適切なのはどれか。", level3Choices:["一般に不揮発性である","一般に揮発性である","実行中の作業領域そのものである","必ず書換え自由である"], answer:0, explanation:"ROM は Read Only Memory の略。一般に電源を切っても内容が消えにくい不揮発性メモリ。" },
+      { id:"L3T021", category:"テクノロジ", level3Only:true, question:"SSDの特徴として適切なのはどれか。", level3Choices:["機械的駆動部がなく高速になりやすい","必ずHDDより安い","絶対に故障しない","光学ディスクの一種である"], answer:0, explanation:"SSD は Solid State Drive の略。機械的駆動部がなく高速になりやすいが、故障しないわけではない。" },
+      { id:"L3T022", category:"テクノロジ", level3Only:true, question:"IPv4のアドレス長として適切なのはどれか。", level3Choices:["32ビット","64ビット","96ビット","128ビット"], answer:0, explanation:"IPv4 は Internet Protocol version 4 の略。アドレス長は 32 ビット。" },
+      { id:"L3T023", category:"テクノロジ", level3Only:true, question:"GUIの説明として適切なのはどれか。", level3Choices:["視覚的な要素で操作するユーザインタフェース","文字コマンドだけで操作する方式","通信を暗号化する仕組み","データベース設計手法"], answer:0, explanation:"GUI は Graphical User Interface の略。アイコンやボタンなど視覚的な要素で操作するユーザインタフェース。" },
+      { id:"L3T024", category:"テクノロジ", level3Only:true, question:"アルゴリズムの説明として適切なのはどれか。", level3Choices:["問題を解くための手順","プログラム言語そのもの","CPUの部品","ネットワーク規格"], answer:0, explanation:"アルゴリズムは、問題を解くための処理手順や計算手順のこと。" },
+      { id:"L3T025", category:"テクノロジ", level3Only:true, question:"2進数1011を10進数で表すといくつか。", level3Choices:["11","10","12","13"], answer:0, explanation:"2進数 1011 は、1×2^3 + 0×2^2 + 1×2^1 + 1×2^0 = 8 + 0 + 2 + 1 = 11。" },
+      { id:"L3T026", category:"テクノロジ", level3Only:true, question:"1バイトを構成するビット数はどれか。", level3Choices:["8","4","16","2"], answer:0, explanation:"1 バイトは 8 ビットで構成される。" },
+      { id:"L3T027", category:"テクノロジ", level3Only:true, question:"16進数1桁で表せる2進数のビット数はどれか。", level3Choices:["4","8","2","16"], answer:0, explanation:"16進数 1 桁は 0～15 を表せるため、2進数 4 ビット分に対応する。" },
+      { id:"L3T028", category:"テクノロジ", level3Only:true, question:"AND回路の動作として適切なのはどれか。", level3Choices:["両方が1のときだけ1","どちらか一方が1なら1","入力が異なるとき1","入力を反転する"], answer:0, explanation:"AND 回路は論理積で、入力が両方とも 1 のときだけ出力が 1 になる。" },
+      { id:"L3T029", category:"テクノロジ", level3Only:true, question:"OR回路の動作として適切なのはどれか。", level3Choices:["どちらか一方でも1なら1","両方が1のときだけ1","入力が異なるときだけ1","入力を反転する"], answer:0, explanation:"OR 回路は論理和で、どちらか一方でも 1 なら出力が 1 になる。" },
+      { id:"L3T030", category:"テクノロジ", level3Only:true, question:"NOT回路の動作として適切なのはどれか。", level3Choices:["入力を反転する","どちらか一方が1なら1","両方が1なら1","両方異なるとき1"], answer:0, explanation:"NOT 回路は入力を反転し、1 なら 0、0 なら 1 を出力する。" },
+      { id:"L3T031", category:"テクノロジ", level3Only:true, question:"SQLのSELECT文の用途として適切なのはどれか。", level3Choices:["データを検索・取得する","データを追加する","データを更新する","表を削除する"], answer:0, explanation:"SQL は Structured Query Language の略。SELECT 文はデータベースからデータを検索・取得するために使う。" },
+      { id:"L3T032", category:"テクノロジ", level3Only:true, question:"SQLのINSERT文の用途として適切なのはどれか。", level3Choices:["新しいデータを追加する","既存データを検索する","既存データを更新する","表構造を表示する"], answer:0, explanation:"SQL は Structured Query Language の略。INSERT 文は表に新しいデータを追加するために使う。" },
+      { id:"L3T033", category:"テクノロジ", level3Only:true, question:"SQLのUPDATE文の用途として適切なのはどれか。", level3Choices:["既存データを更新する","新規データを追加する","表を削除する","索引を作成する"], answer:0, explanation:"SQL は Structured Query Language の略。UPDATE 文は既存データを更新するために使う。" },
+      { id:"L3T034", category:"テクノロジ", level3Only:true, question:"WANの説明として適切なのはどれか。", level3Choices:["広域ネットワーク","建物内だけの小規模ネットワーク","USB接続規格","Web記述言語"], answer:0, explanation:"WAN は Wide Area Network の略。広い範囲にまたがるネットワークを指し、LAN は Local Area Network。" },
+      { id:"L3T035", category:"テクノロジ", level3Only:true, question:"LLM（大規模言語モデル）の説明として適切なものはどれか。", level3Choices:["膨大なテキストデータを学習して自然言語の理解・生成を行うAIモデル","画像認識専用の畳み込みニューラルネットワーク","音声合成のみに特化した機械学習モデル","データベース検索を高速化する索引構造"], answer:0, explanation:"LLM（Large Language Model）は、大量のテキストデータを事前学習した大規模な言語モデル。ChatGPT や Gemini などの生成 AI の基盤技術として利用される。" },
+      { id:"L3T036", category:"テクノロジ", level3Only:true, question:"ファインチューニングの説明として適切なものはどれか。", level3Choices:["事前学習済みAIモデルに特定用途向けの追加学習を行う工程","AIモデルをゼロから訓練し直すこと","モデルの計算精度を落として高速化する量子化処理","AIが出力した文章を人間が手動で修正すること"], answer:0, explanation:"ファインチューニングとは、大量データで事前学習済みの AI モデルに対し、特定の用途やドメインに合わせた少量データで追加学習を行い、精度を向上させる手法。" },
+      { id:"L3T037", category:"テクノロジ", level3Only:true, question:"マルチモーダルAIの説明として適切なものはどれか。", level3Choices:["テキスト・画像・音声など複数種類のデータを同時に処理できるAI","複数のAIモデルを組み合わせてアンサンブル学習するシステム","複数言語に対応した機械翻訳AI","マルチコアCPUで並列処理を行うAI推論エンジン"], answer:0, explanation:"マルチモーダル AI とは、テキスト・画像・音声・動画など異なる種類（モダリティ）のデータを組み合わせて理解・生成できる AI。GPT-4o や Gemini などが代表例。" },
+      { id:"L3T038", category:"テクノロジ", level3Only:true, question:"GPGPU（汎用GPU演算）の説明として適切なものはどれか。", level3Choices:["画像処理用のGPUを機械学習などの汎用計算に活用する技術","グラフィックスカードで映像を出力する基本的な用途","GPUを複数枚搭載してゲームを高画質化する技術","GPUの消費電力を削減する省エネ設計手法"], answer:0, explanation:"GPGPU（General-Purpose computing on Graphics Processing Units）は、本来グラフィックス処理に特化した GPU を、AI の機械学習や科学技術計算など汎用的な並列計算に活用する技術。" },
+      { id:"L3T039", category:"テクノロジ", level3Only:true, question:"パスワードレス認証の説明として適切なものはどれか。", level3Choices:["生体認証やFIDO規格を使いパスワードなしでログインする認証方式","パスワードを自動生成して毎回変更する認証","パスワードをシステムが記憶して自動入力する機能","パスワードを廃止してIDのみで認証する方式"], answer:0, explanation:"パスワードレス認証とは、従来のパスワードを使わず、生体認証（指紋・顔）やセキュリティキー（FIDO2/WebAuthn 準拠）などを用いてログインする認証方式。フィッシングやパスワード漏洩リスクを大幅に低減できる。" },
+      { id:"L3T040", category:"テクノロジ", level3Only:true, question:"リスクベース認証の説明として適切なものはどれか。", level3Choices:["アクセスの状況に応じてリスクを評価し追加認証の要否を動的に判断する方式","全ユーザに一律で多要素認証を強制する方式","リスクの高いシステムへのアクセスを完全禁止する方式","パスワードの強度に応じて認証頻度を変える仕組み"], answer:0, explanation:"リスクベース認証とは、ログイン時の状況（端末・場所・時間帯・操作行動など）を分析してリスクを評価し、普段と異なるアクセスには追加認証を要求するなど、認証強度を動的に変化させる方式。" },
+      { id:"L3T041", category:"テクノロジ", level3Only:true, question:"二重脅迫型ランサムウェアの説明として最も適切なものはどれか。", level3Choices:["データを暗号化して身代金を要求すると同時に「払わないとデータを公開する」と脅す攻撃","同一標的に2回連続でランサムウェアを感染させる攻撃","2か所の拠点を同時に狙ってバックアップも暗号化する攻撃","2人の攻撃者が役割分担して行うランサムウェア攻撃"], answer:0, explanation:"二重脅迫型ランサムウェアは、データを暗号化して復号の身代金を要求するだけでなく、「支払わなければ盗んだデータをリークサイトに公開する」とも脅す攻撃手法。バックアップだけでは対策不十分なため被害が深刻化している。" },
+      { id:"L3T042", category:"テクノロジ", level3Only:true, question:"イミュータブルバックアップの説明として適切なものはどれか。", level3Choices:["一度書き込んだバックアップデータを変更・削除できない状態で保管する手法","バックアップを毎回上書きして最新版だけを保持する手法","バックアップを暗号化してパスワードなしでは読めない状態にすること","複数拠点に同時バックアップを行う冗長化手法"], answer:0, explanation:"イミュータブルバックアップとは、書き込み後に変更・削除ができない（不変の）状態でバックアップを保管する手法（WORM 機能等）。ランサムウェアに感染してもバックアップが改ざん・削除されないため有効な対策となる。" }
+    ];
+
+    const STORAGE_KEY = "it_passport_wrong_question_ids_v9";
+    const FLASH_WEAK_KEY = "it_passport_flash_weak_ids_v1";
+    const FLASH_KNOWN_KEY = "it_passport_flash_known_ids_v1";
+    const AUTO_ADVANCE_KEY = "it_passport_auto_advance_v1";
+
+    const setupScreen = document.getElementById("setupScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const flashcardScreen = document.getElementById("flashcardScreen");
+    const resultBox = document.getElementById("resultBox");
+    const statusBox = document.getElementById("statusBox");
+    const installBox = document.getElementById("installBox");
+
+    const setupTitle = document.getElementById("setupTitle");
+    const questionCountSelect = document.getElementById("questionCount");
+    const levelSelect = document.getElementById("levelSelect");
+    const categoryCheckboxes = document.querySelectorAll(".categoryCheckbox");
+
+    const quizModeTab = document.getElementById("quizModeTab");
+    const flashModeTab = document.getElementById("flashModeTab");
+    const quizSetupButtons = document.getElementById("quizSetupButtons");
+    const flashSetupButtons = document.getElementById("flashSetupButtons");
+    const quizSetupNote = document.getElementById("quizSetupNote");
+    const flashSetupNote = document.getElementById("flashSetupNote");
+
+    const startBtn = document.getElementById("startBtn");
+    const startReviewBtn = document.getElementById("startReviewBtn");
+    const startFlashBtn = document.getElementById("startFlashBtn");
+    const startWeakFlashBtn = document.getElementById("startWeakFlashBtn");
+
+    const retrySameBtn = document.getElementById("retrySameBtn");
+    const reviewWrongBtn = document.getElementById("reviewWrongBtn");
+    const returnSetupBtn = document.getElementById("returnSetupBtn");
+    const backToSetupBtn = document.getElementById("backToSetupBtn");
+
+    const progress = document.getElementById("progress");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const answeredText = document.getElementById("answeredText");
+    const questionNumber = document.getElementById("questionNumber");
+    const questionMeta = document.getElementById("questionMeta");
+    const questionText = document.getElementById("questionText");
+    const choicesArea = document.getElementById("choicesArea");
+    const answerBox = document.getElementById("answerBox");
+    const answerTitle = document.getElementById("answerTitle");
+    const answerValue = document.getElementById("answerValue");
+    const explanationValue = document.getElementById("explanationValue");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const dontKnowBtn = document.getElementById("dontKnowBtn");
+    const dontKnowArea = document.getElementById("dontKnowArea");
+
+    const timerDisplay = document.getElementById("timerDisplay");
+    const autoAdvanceProgress = document.getElementById("autoAdvanceProgress");
+    const autoAdvanceFill = document.getElementById("autoAdvanceFill");
+    const autoAdvanceCheck = document.getElementById("autoAdvanceCheck");
+
+    const finalScore = document.getElementById("finalScore");
+    const finalMessage = document.getElementById("finalMessage");
+    const correctCountText = document.getElementById("correctCountText");
+    const wrongCountText = document.getElementById("wrongCountText");
+    const modeText = document.getElementById("modeText");
+    const elapsedTimeText = document.getElementById("elapsedTimeText");
+    const wrongReviewSection = document.getElementById("wrongReviewSection");
+    const wrongReviewList = document.getElementById("wrongReviewList");
+
+    const flashProgress = document.getElementById("flashProgress");
+    const flashModeLabel = document.getElementById("flashModeLabel");
+    const flashProgressText = document.getElementById("flashProgressText");
+    const flashSeenText = document.getElementById("flashSeenText");
+    const flashProgressFill = document.getElementById("flashProgressFill");
+    const flashCategoryMeta = document.getElementById("flashCategoryMeta");
+    const flashcard = document.getElementById("flashcard");
+    const flashSideLabel = document.getElementById("flashSideLabel");
+    const flashMain = document.getElementById("flashMain");
+    const flashSub = document.getElementById("flashSub");
+    const flashHint = document.getElementById("flashHint");
+    const flashPrevBtn = document.getElementById("flashPrevBtn");
+    const flashFlipBtn = document.getElementById("flashFlipBtn");
+    const flashNextBtn = document.getElementById("flashNextBtn");
+    const markKnownBtn = document.getElementById("markKnownBtn");
+    const markWeakBtn = document.getElementById("markWeakBtn");
+    const flashBackBtn = document.getElementById("flashBackBtn");
+    const knownCountText = document.getElementById("knownCountText");
+    const weakCountText = document.getElementById("weakCountText");
+    const flashBankCountText = document.getElementById("flashBankCountText");
+
+    let appMode = "quiz";
+
+    let currentQuiz = [];
+    let currentQuestionIndex = 0;
+    let selectedAnswers = [];
+    let judgedQuestions = [];
+    let score = 0;
+    let mode = "通常";
+    let lastConfig = null;
+
+    let quizStartTime = null;
+    let timerInterval = null;
+    let autoAdvanceTimer = null;
+
+    let flashcards = [];
+    let currentFlashIndex = 0;
+    let isFlashBackSide = false;
+    let flashSeenIds = new Set();
+    let flashModeName = "通常";
+
+    function initQuestionCountOptions() {
+      for (let i = 10; i <= 100; i += 10) {
+        const option = document.createElement("option");
+        option.value = String(i);
+        option.textContent = `${i}問`;
+        if (i === 20) option.selected = true;
+        questionCountSelect.appendChild(option);
+      }
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+      quizStartTime = Date.now();
+      timerDisplay.textContent = "00:00";
+      timerDisplay.classList.remove("warning");
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
+        timerDisplay.textContent = formatTime(elapsed);
+        if (elapsed >= 60 * 20) timerDisplay.classList.add("warning");
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function getElapsedSeconds() {
+      if (!quizStartTime) return 0;
+      return Math.floor((Date.now() - quizStartTime) / 1000);
+    }
+
+    function isAutoAdvanceEnabled() {
+      return autoAdvanceCheck.checked;
+    }
+
+    function cancelAutoAdvance() {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+      autoAdvanceProgress.classList.remove("active");
+      autoAdvanceFill.style.transition = "none";
+      autoAdvanceFill.style.width = "0%";
+    }
+
+    function triggerAutoAdvance() {
+      cancelAutoAdvance();
+      autoAdvanceProgress.classList.add("active");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          autoAdvanceFill.style.transition = "width 1.5s linear";
+          autoAdvanceFill.style.width = "100%";
+        });
+      });
+      autoAdvanceTimer = setTimeout(() => {
+        autoAdvanceProgress.classList.remove("active");
+        autoAdvanceFill.style.transition = "none";
+        autoAdvanceFill.style.width = "0%";
+        goNext();
+      }, 1500);
+    }
+
+    function showStatus(message) {
+      statusBox.textContent = message;
+      statusBox.classList.add("show");
+    }
+
+    function hideStatus() {
+      statusBox.textContent = "";
+      statusBox.classList.remove("show");
+    }
+
+    function showInstallMessage(message) {
+      installBox.textContent = message;
+      installBox.classList.add("show");
+    }
+
+    function isStandaloneMode() {
+      return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    }
+
+    function updateInstallMessage() {
+      if (isStandaloneMode()) {
+        showInstallMessage("ホーム画面アプリとして起動中です。");
+        return;
+      }
+      const ua = window.navigator.userAgent || "";
+      const isIPhone = /iPhone|iPad|iPod/i.test(ua);
+      if (isIPhone) {
+        showInstallMessage("iPhoneでは Safari の共有ボタン →『ホーム画面に追加』でアプリ化できます。");
+      } else {
+        showInstallMessage("ホーム画面追加やインストール後は、よりアプリに近い表示で使えます。");
+      }
+    }
+
+    function getSelectedCategories() {
+      return Array.from(categoryCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+    }
+
+    function shuffleArray(arr) {
+      const copied = [...arr];
+      for (let i = copied.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copied[i], copied[j]] = [copied[j], copied[i]];
+      }
+      return copied;
+    }
+
+    function getStoredIdArray(key) {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveStoredIdArray(key, ids) {
+      localStorage.setItem(key, JSON.stringify(ids));
+    }
+
+    function getWrongQuestionIds() {
+      return getStoredIdArray(STORAGE_KEY);
+    }
+
+    function saveWrongQuestionIds(ids) {
+      saveStoredIdArray(STORAGE_KEY, ids);
+    }
+
+    function addWrongQuestionId(questionId) {
+      const ids = getWrongQuestionIds();
+      if (!ids.includes(questionId)) {
+        ids.push(questionId);
+        saveWrongQuestionIds(ids);
+      }
+    }
+
+    function removeWrongQuestionId(questionId) {
+      const ids = getWrongQuestionIds().filter(id => id !== questionId);
+      saveWrongQuestionIds(ids);
+    }
+
+    function getFlashWeakIds() {
+      return getStoredIdArray(FLASH_WEAK_KEY);
+    }
+
+    function getFlashKnownIds() {
+      return getStoredIdArray(FLASH_KNOWN_KEY);
+    }
+
+    function setFlashWeakIds(ids) {
+      saveStoredIdArray(FLASH_WEAK_KEY, ids);
+    }
+
+    function setFlashKnownIds(ids) {
+      saveStoredIdArray(FLASH_KNOWN_KEY, ids);
+    }
+
+    function addUniqueId(key, id) {
+      const ids = getStoredIdArray(key);
+      if (!ids.includes(id)) {
+        ids.push(id);
+        saveStoredIdArray(key, ids);
+      }
+    }
+
+    function removeIdFromStore(key, id) {
+      const ids = getStoredIdArray(key).filter(v => v !== id);
+      saveStoredIdArray(key, ids);
+    }
+
+    function markFlashKnown(id) {
+      addUniqueId(FLASH_KNOWN_KEY, id);
+      removeIdFromStore(FLASH_WEAK_KEY, id);
+      flashSeenIds.add(id);
+      updateFlashStats();
+    }
+
+    function markFlashWeak(id) {
+      addUniqueId(FLASH_WEAK_KEY, id);
+      removeIdFromStore(FLASH_KNOWN_KEY, id);
+      flashSeenIds.add(id);
+      updateFlashStats();
+    }
+
+    function extractAbbreviationInfo(explanation) {
+      if (!explanation) return null;
+      const match = explanation.match(/^([A-Za-z0-9]+)\s+は\s+(.+?)\s+の略。/);
+      if (!match) return null;
+      const abbr = match[1].trim();
+      const fullName = match[2].trim();
+      const rest = explanation.replace(match[0], "").trim();
+      return {
+        abbreviation: abbr,
+        fullName,
+        meaning: rest || "正式名称と要点を確認する。"
+      };
+    }
+
+    function buildFlashcardPool(config, weakOnly = false) {
+      let pool = questionBank.filter(q => {
+        if (!config.categories.includes(q.category)) return false;
+        if (q.level3Only && config.level !== 3) return false;
+        return extractAbbreviationInfo(q.explanation) !== null;
+      });
+
+      if (weakOnly) {
+        const weakIds = getFlashWeakIds();
+        pool = pool.filter(q => weakIds.includes(q.id));
+      }
+
+      const cards = pool.map(q => {
+        const info = extractAbbreviationInfo(q.explanation);
+        return {
+          id: q.id,
+          category: q.category,
+          abbreviation: info.abbreviation,
+          fullName: info.fullName,
+          description: info.meaning,
+          sourceQuestion: q.question
+        };
+      });
+
+      return shuffleArray(cards);
+    }
+
+    function getBaseChoicesForQuestion(q, level) {
+      if (level === 3 && q.level3Choices) return q.level3Choices;
+      if (level === 2 && q.level2Choices) return q.level2Choices;
+      return q.level1Choices || q.level2Choices || q.level3Choices;
+    }
+
+    function buildPresentedQuestion(q, level) {
+      const baseChoices = getBaseChoicesForQuestion(q, level);
+      const indexedChoices = baseChoices.map((text, idx) => ({
+        text,
+        isCorrect: idx === q.answer
+      }));
+      const shuffled = shuffleArray(indexedChoices);
+      const correctIndex = shuffled.findIndex(c => c.isCorrect);
+
+      return {
+        id: q.id,
+        category: q.category,
+        question: q.question,
+        explanation: q.explanation,
+        choices: shuffled.map(c => c.text),
+        answer: correctIndex
+      };
+    }
+
+    function buildQuiz(config, reviewMode = false) {
+      let pool = questionBank.filter(q => {
+        if (!config.categories.includes(q.category)) return false;
+        if (q.level3Only && config.level !== 3) return false;
+        return true;
+      });
+
+      if (reviewMode) {
+        const wrongIds = getWrongQuestionIds();
+        pool = pool.filter(q => wrongIds.includes(q.id));
+      }
+
+      if (pool.length === 0) return null;
+
+      const requestedCount = Math.min(config.count, pool.length);
+      const selected = shuffleArray(pool).slice(0, requestedCount);
+      return selected.map(q => buildPresentedQuestion(q, config.level));
+    }
+
+    function switchAppMode(nextMode) {
+      appMode = nextMode;
+      hideStatus();
+      setupScreen.classList.remove("hidden");
+      quizScreen.classList.add("hidden");
+      flashcardScreen.classList.remove("show");
+      resultBox.classList.remove("show");
+      resultBox.style.display = "none";
+
+      if (nextMode === "quiz") {
+        quizModeTab.classList.add("active");
+        flashModeTab.classList.remove("active");
+        setupTitle.textContent = "クイズ出題設定";
+        quizSetupButtons.classList.remove("hidden");
+        flashSetupButtons.classList.add("hidden");
+        quizSetupNote.classList.remove("hidden");
+        quizSetupNote.classList.add("show");
+        flashSetupNote.classList.add("hidden");
+        flashSetupNote.classList.remove("show");
+      } else {
+        flashModeTab.classList.add("active");
+        quizModeTab.classList.remove("active");
+        setupTitle.textContent = "暗記カード設定";
+        quizSetupButtons.classList.add("hidden");
+        flashSetupButtons.classList.remove("hidden");
+        quizSetupNote.classList.add("hidden");
+        quizSetupNote.classList.remove("show");
+        flashSetupNote.classList.remove("hidden");
+        flashSetupNote.classList.add("show");
+      }
+    }
+
+    function startQuiz(reviewMode = false, useLastConfig = false) {
+      hideStatus();
+
+      const categories = useLastConfig && lastConfig ? lastConfig.categories : getSelectedCategories();
+      const count = useLastConfig && lastConfig ? lastConfig.count : Number(questionCountSelect.value);
+      const level = useLastConfig && lastConfig ? lastConfig.level : Number(levelSelect.value);
+
+      if (!categories.length) {
+        showStatus("少なくとも1つは分野を選んでください。");
+        return;
+      }
+
+      const config = { count, categories, level };
+      const quiz = buildQuiz(config, reviewMode);
+
+      if (!quiz) {
+        if (reviewMode) {
+          showStatus("復習対象の問題がありません。先に通常モードで解いて、不正解を作ってください。");
+        } else {
+          showStatus("選択した条件に合う問題がありません。設定を見直してください。");
+        }
+        return;
+      }
+
+      lastConfig = config;
+      currentQuiz = quiz;
+      currentQuestionIndex = 0;
+      selectedAnswers = new Array(currentQuiz.length).fill(null);
+      judgedQuestions = new Array(currentQuiz.length).fill(false);
+      score = 0;
+      mode = reviewMode ? "間違えた問題だけ復習" : "通常";
+
+      setupScreen.classList.add("hidden");
+      resultBox.classList.remove("show");
+      resultBox.style.display = "none";
+      quizScreen.classList.remove("hidden");
+      flashcardScreen.classList.remove("show");
+
+      startTimer();
+      renderQuestion();
+      focusFirstChoiceButton();
+    }
+
+    function startFlashcards(weakOnly = false) {
+      hideStatus();
+
+      const categories = getSelectedCategories();
+      const count = Number(questionCountSelect.value);
+      const level = Number(levelSelect.value);
+
+      if (!categories.length) {
+        showStatus("少なくとも1つは分野を選んでください。");
+        return;
+      }
+
+      const config = { count, categories, level };
+      let cards = buildFlashcardPool(config, weakOnly);
+
+      if (!cards.length) {
+        if (weakOnly) {
+          showStatus("あいまいカードがありません。先に通常の暗記カード学習を行ってください。");
+        } else {
+          showStatus("選択条件に合う略語カードがありません。解説に略語がある問題だけが対象です。");
+        }
+        return;
+      }
+
+      cards = cards.slice(0, Math.min(count, cards.length));
+
+      flashcards = cards;
+      currentFlashIndex = 0;
+      isFlashBackSide = false;
+      flashSeenIds = new Set();
+      flashModeName = weakOnly ? "あいまいカード復習" : "通常カード学習";
+
+      setupScreen.classList.add("hidden");
+      quizScreen.classList.add("hidden");
+      resultBox.classList.remove("show");
+      resultBox.style.display = "none";
+      flashcardScreen.classList.add("show");
+
+      renderFlashcard();
+    }
+
+    function updateProgress() {
+      const total = currentQuiz.length;
+      const current = currentQuestionIndex + 1;
+      const judgedCount = judgedQuestions.filter(Boolean).length;
+      const percent = Math.round((current / total) * 100);
+
+      progress.textContent = `第${current}問 / ${total}問`;
+      scoreDisplay.textContent = `正解数: ${score}`;
+      progressFill.style.width = `${percent}%`;
+      progressText.textContent = `進捗 ${percent}%`;
+      answeredText.textContent = `回答済み ${judgedCount} / ${total}`;
+    }
+
+    function renderQuestion() {
+      const q = currentQuiz[currentQuestionIndex];
+      updateProgress();
+
+      questionNumber.textContent = `問題 ${currentQuestionIndex + 1}`;
+      questionMeta.textContent = `分野: ${q.category} / ID: ${q.id} / レベル${lastConfig.level}`;
+      questionText.textContent = q.question;
+      choicesArea.innerHTML = "";
+
+      q.choices.forEach((choice, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "choice-btn";
+        btn.textContent = choice;
+        btn.setAttribute("aria-label", `選択肢 ${index + 1}: ${choice}`);
+
+        if (judgedQuestions[currentQuestionIndex]) {
+          btn.disabled = true;
+          btn.setAttribute("aria-disabled", "true");
+          if (index === q.answer) btn.classList.add("correct");
+          if (selectedAnswers[currentQuestionIndex] === index && selectedAnswers[currentQuestionIndex] !== q.answer) {
+            btn.classList.add("wrong");
+          }
+        }
+
+        btn.addEventListener("click", () => handleChoiceClick(index));
+        choicesArea.appendChild(btn);
+      });
+
+      if (judgedQuestions[currentQuestionIndex]) {
+        showAnswerBox();
+      } else {
+        hideAnswerBox();
+      }
+
+      prevBtn.disabled = currentQuestionIndex === 0;
+      nextBtn.textContent = currentQuestionIndex === currentQuiz.length - 1 ? "結果を見る" : "次の問題";
+      dontKnowBtn.disabled = judgedQuestions[currentQuestionIndex];
+    }
+
+    function handleChoiceClick(index) {
+      if (judgedQuestions[currentQuestionIndex]) return;
+
+      const q = currentQuiz[currentQuestionIndex];
+      selectedAnswers[currentQuestionIndex] = index;
+      judgedQuestions[currentQuestionIndex] = true;
+
+      const isCorrect = index === q.answer;
+      if (isCorrect) {
+        score += 1;
+        removeWrongQuestionId(q.id);
+      } else {
+        addWrongQuestionId(q.id);
+      }
+
+      renderQuestion();
+      nextBtn.focus();
+
+      if (isCorrect && isAutoAdvanceEnabled() && currentQuestionIndex < currentQuiz.length - 1) {
+        triggerAutoAdvance();
+      }
+    }
+
+    function showAnswerBox() {
+      const q = currentQuiz[currentQuestionIndex];
+      const selected = selectedAnswers[currentQuestionIndex];
+      const isDontKnow = selected === -1;
+      const isCorrect = !isDontKnow && selected === q.answer;
+
+      answerBox.classList.add("show");
+      if (isDontKnow) {
+        answerTitle.textContent = "わからない";
+        answerTitle.className = "answer-title dontknow";
+      } else {
+        answerTitle.textContent = isCorrect ? "正解" : "不正解";
+        answerTitle.className = "answer-title";
+      }
+      answerValue.textContent = q.choices[q.answer];
+      explanationValue.textContent = q.explanation;
+    }
+
+    function hideAnswerBox() {
+      answerBox.classList.remove("show");
+      answerTitle.textContent = "";
+      answerValue.textContent = "";
+      explanationValue.textContent = "";
+    }
+
+    function focusFirstChoiceButton() {
+      const firstChoice = choicesArea.querySelector(".choice-btn");
+      if (firstChoice) firstChoice.focus();
+    }
+
+    function goPrev() {
+      cancelAutoAdvance();
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex -= 1;
+        renderQuestion();
+        focusFirstChoiceButton();
+      }
+    }
+
+    function goNext() {
+      cancelAutoAdvance();
+      if (currentQuestionIndex === currentQuiz.length - 1) {
+        showResult();
+        return;
+      }
+      currentQuestionIndex += 1;
+      renderQuestion();
+      focusFirstChoiceButton();
+    }
+
+    function showResult() {
+      stopTimer();
+      cancelAutoAdvance();
+
+      quizScreen.classList.add("hidden");
+      flashcardScreen.classList.remove("show");
+      resultBox.classList.add("show");
+      resultBox.style.display = "block";
+
+      const wrongCount = currentQuiz.length - score;
+      const rate = score / currentQuiz.length;
+      const elapsed = getElapsedSeconds();
+
+      finalScore.textContent = `${currentQuiz.length}問中 ${score}問正解`;
+      correctCountText.textContent = `${score}問`;
+      wrongCountText.textContent = `${wrongCount}問`;
+      modeText.textContent = `${mode} / レベル${lastConfig.level}`;
+      elapsedTimeText.textContent = formatTime(elapsed);
+
+      let message = "";
+      if (rate === 1) {
+        message = "完璧です！過去問を解いてみてもいいかも！！";
+      } else if (rate >= 0.8) {
+        message = "合格ラインを超えています！このまま頑張りましょう！！";
+      } else if (rate >= 0.6) {
+        message = "合格ラインくらいです！学習を続けましょう！！";
+      } else {
+        message = "もう少しです！レベル1に戻して定義を固め直そう！";
+      }
+      finalMessage.textContent = message;
+
+      renderWrongReview();
+      retrySameBtn.focus();
+    }
+
+    function renderWrongReview() {
+      wrongReviewList.innerHTML = "";
+      const wrongItems = currentQuiz
+        .map((q, i) => ({ q, selected: selectedAnswers[i], judged: judgedQuestions[i] }))
+        .filter(({ q, selected }) => selected !== null && selected !== q.answer);
+
+      if (wrongItems.length === 0) {
+        wrongReviewSection.style.display = "none";
+        return;
+      }
+
+      wrongReviewSection.style.display = "block";
+
+      wrongItems.forEach(({ q, selected }, idx) => {
+        const item = document.createElement("div");
+        item.className = "wrong-item";
+
+        const header = document.createElement("div");
+        header.className = "wrong-item-header";
+        header.innerHTML = `<span class="wrong-num">✗ ${idx + 1}</span><span>${q.question}</span>`;
+
+        const body = document.createElement("div");
+        body.className = "wrong-item-body";
+        body.innerHTML = `
+          <div class="wrong-detail-line"><span class="label">あなたの回答：</span><span class="my-answer">${selected === -1 ? "？ わからない" : "✗ " + q.choices[selected]}</span></div>
+          <div class="wrong-detail-line"><span class="label">正解：</span><span class="correct-answer">○ ${q.choices[q.answer]}</span></div>
+          <div class="wrong-detail-line"><span class="label">解説：</span><span class="explanation">${q.explanation}</span></div>
+        `;
+
+        header.addEventListener("click", () => {
+          body.classList.toggle("open");
+        });
+
+        item.appendChild(header);
+        item.appendChild(body);
+        wrongReviewList.appendChild(item);
+      });
+    }
+
+    function returnToSetup() {
+      stopTimer();
+      cancelAutoAdvance();
+      hideStatus();
+      quizScreen.classList.add("hidden");
+      flashcardScreen.classList.remove("show");
+      resultBox.classList.remove("show");
+      resultBox.style.display = "none";
+      setupScreen.classList.remove("hidden");
+      if (appMode === "quiz") {
+        startBtn.focus();
+      } else {
+        startFlashBtn.focus();
+      }
+    }
+
+    function updateFlashStats() {
+      const knownIds = getFlashKnownIds();
+      const weakIds = getFlashWeakIds();
+      knownCountText.textContent = `${knownIds.length}枚`;
+      weakCountText.textContent = `${weakIds.length}枚`;
+      flashBankCountText.textContent = `${flashcards.length}枚`;
+    }
+
+    function updateFlashProgress() {
+      const total = flashcards.length;
+      const current = currentFlashIndex + 1;
+      const judgedCount = flashSeenIds.size;
+      const percent = Math.round((current / total) * 100);
+
+      flashProgress.textContent = `カード ${current} / ${total}`;
+      flashModeLabel.textContent = flashModeName;
+      flashProgressText.textContent = `進捗 ${percent}%`;
+      flashSeenText.textContent = `判定済み ${judgedCount} / ${total}`;
+      flashProgressFill.style.width = `${percent}%`;
+    }
+
+    function renderFlashcard() {
+      const card = flashcards[currentFlashIndex];
+      updateFlashProgress();
+      updateFlashStats();
+
+      flashCategoryMeta.textContent = `分野: ${card.category} / ID: ${card.id}`;
+
+      if (!isFlashBackSide) {
+        flashSideLabel.textContent = "表面：略語";
+        flashMain.textContent = card.abbreviation;
+        flashSub.textContent = "";
+        flashHint.textContent = "カードをタップして、正式名称・意味・要点を確認してください。";
+      } else {
+        flashSideLabel.textContent = "裏面：正式名称・意味・要点";
+        flashMain.textContent = card.fullName;
+        flashSub.textContent = `${card.description}\n\n出典問題: ${card.sourceQuestion}`;
+        flashHint.textContent = "理解できたら「覚えた」、まだ怪しければ「あいまい」で記録してください。";
+      }
+
+      flashPrevBtn.disabled = currentFlashIndex === 0;
+      flashNextBtn.disabled = currentFlashIndex === flashcards.length - 1;
+    }
+
+    function flipFlashcard() {
+      if (!flashcards.length) return;
+      isFlashBackSide = !isFlashBackSide;
+      renderFlashcard();
+    }
+
+    function goPrevFlashcard() {
+      if (currentFlashIndex > 0) {
+        currentFlashIndex -= 1;
+        isFlashBackSide = false;
+        renderFlashcard();
+      }
+    }
+
+    function goNextFlashcard() {
+      if (currentFlashIndex < flashcards.length - 1) {
+        currentFlashIndex += 1;
+        isFlashBackSide = false;
+        renderFlashcard();
+      }
+    }
+
+    function goToNextIfPossible() {
+      if (currentFlashIndex < flashcards.length - 1) {
+        currentFlashIndex += 1;
+        isFlashBackSide = false;
+        renderFlashcard();
+      } else {
+        renderFlashcard();
+      }
+    }
+
+    prevBtn.addEventListener("click", goPrev);
+    nextBtn.addEventListener("click", goNext);
+    dontKnowBtn.addEventListener("click", () => {
+      if (judgedQuestions[currentQuestionIndex]) return;
+      const q = currentQuiz[currentQuestionIndex];
+      selectedAnswers[currentQuestionIndex] = -1;
+      judgedQuestions[currentQuestionIndex] = true;
+      addWrongQuestionId(q.id);
+      renderQuestion();
+      nextBtn.focus();
+    });
+    startBtn.addEventListener("click", () => startQuiz(false));
+    startReviewBtn.addEventListener("click", () => startQuiz(true));
+    startFlashBtn.addEventListener("click", () => startFlashcards(false));
+    startWeakFlashBtn.addEventListener("click", () => startFlashcards(true));
+    retrySameBtn.addEventListener("click", () => startQuiz(mode === "間違えた問題だけ復習", true));
+    reviewWrongBtn.addEventListener("click", () => startQuiz(true, true));
+    returnSetupBtn.addEventListener("click", returnToSetup);
+    backToSetupBtn.addEventListener("click", returnToSetup);
+
+    quizModeTab.addEventListener("click", () => switchAppMode("quiz"));
+    flashModeTab.addEventListener("click", () => switchAppMode("flash"));
+
+    flashcard.addEventListener("click", flipFlashcard);
+    flashFlipBtn.addEventListener("click", flipFlashcard);
+    flashPrevBtn.addEventListener("click", goPrevFlashcard);
+    flashNextBtn.addEventListener("click", goNextFlashcard);
+    flashBackBtn.addEventListener("click", returnToSetup);
+
+    markKnownBtn.addEventListener("click", () => {
+      const card = flashcards[currentFlashIndex];
+      markFlashKnown(card.id);
+      goToNextIfPossible();
+    });
+
+    markWeakBtn.addEventListener("click", () => {
+      const card = flashcards[currentFlashIndex];
+      markFlashWeak(card.id);
+      goToNextIfPossible();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (appMode === "quiz" && !quizScreen.classList.contains("hidden")) {
+        const num = parseInt(e.key);
+        if (num >= 1 && num <= 4) {
+          e.preventDefault();
+          if (!judgedQuestions[currentQuestionIndex]) {
+            const btns = choicesArea.querySelectorAll(".choice-btn:not(:disabled)");
+            if (btns[num - 1]) btns[num - 1].click();
+          }
+          return;
+        }
+        if (e.key === "ArrowRight" || (e.key === "Enter" && document.activeElement !== nextBtn && document.activeElement !== prevBtn && document.activeElement !== backToSetupBtn)) {
+          if (judgedQuestions[currentQuestionIndex]) {
+            e.preventDefault();
+            cancelAutoAdvance();
+            goNext();
+          }
+          return;
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          cancelAutoAdvance();
+          goPrev();
+          return;
+        }
+      }
+    });
+
+    autoAdvanceCheck.addEventListener("change", () => {
+      localStorage.setItem(AUTO_ADVANCE_KEY, autoAdvanceCheck.checked ? "1" : "0");
+    });
+
+    async function registerServiceWorker() {
+      if (!("serviceWorker" in navigator)) return;
+      try {
+        await navigator.serviceWorker.register("./sw.js");
+      } catch (error) {
+        console.error("Service Worker registration failed:", error);
+      }
+    }
+
+    window.addEventListener("load", async () => {
+      initQuestionCountOptions();
+      updateInstallMessage();
+      switchAppMode("quiz");
+      const savedAutoAdvance = localStorage.getItem(AUTO_ADVANCE_KEY);
+      if (savedAutoAdvance === "1") autoAdvanceCheck.checked = true;
+      await registerServiceWorker();
+    });
+  </script>
+</body>
+</html>
