@@ -101,9 +101,9 @@
       touch-action: manipulation;
     }
     .seg-btn.active {
-      background: #fff;
-      color: #2d5bdb;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      background: linear-gradient(160deg, #f0f5ff 0%, #dce8ff 100%);
+      color: #2249b0;
+      box-shadow: 0 2px 10px rgba(45,91,219,0.18);
     }
 
     /* ─── メインカード ─── */
@@ -134,20 +134,22 @@
       gap: 8px;
     }
     .level-card {
-      border: 2px solid #e2e8f8;
+      border: 1.5px solid #dce4f5;
       border-radius: 12px;
       padding: 12px 8px;
       text-align: center;
       cursor: pointer;
       transition: 0.16s ease;
-      background: #fafcff;
+      background: linear-gradient(160deg, #fafcff 0%, #eef2fc 100%);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       user-select: none;
       -webkit-user-select: none;
       touch-action: manipulation;
     }
     .level-card.selected {
       border-color: #2d5bdb;
-      background: #eef3ff;
+      background: linear-gradient(160deg, #eef5ff 0%, #d4e4ff 100%);
+      box-shadow: 0 3px 10px rgba(45,91,219,0.2);
     }
     .level-card-num {
       font-size: 20px;
@@ -215,12 +217,12 @@
       -webkit-user-select: none;
       touch-action: manipulation;
     }
-    .cat-chip.strategy       { background: #eef3ff; color: #2d5bdb; border-color: #c5d3f8; }
-    .cat-chip.strategy.off   { background: #f4f6fb; color: #a0aabf; border-color: #dde3ef; }
-    .cat-chip.management     { background: #edfaf3; color: #16a34a; border-color: #bbe9cc; }
-    .cat-chip.management.off { background: #f4f6fb; color: #a0aabf; border-color: #dde3ef; }
-    .cat-chip.technology     { background: #fff5ed; color: #ea580c; border-color: #fbc99b; }
-    .cat-chip.technology.off { background: #f4f6fb; color: #a0aabf; border-color: #dde3ef; }
+    .cat-chip.strategy       { background: linear-gradient(160deg, #f0f5ff 0%, #dce8ff 100%); color: #2249b0; border-color: #b8ccf8; box-shadow: 0 2px 6px rgba(45,91,219,0.1); }
+    .cat-chip.strategy.off   { background: linear-gradient(160deg, #f6f8fc 0%, #edf0f7 100%); color: #a0aabf; border-color: #dde3ef; box-shadow: none; }
+    .cat-chip.management     { background: linear-gradient(160deg, #edfaf4 0%, #d4f0e2 100%); color: #157a3a; border-color: #a8e0c0; box-shadow: 0 2px 6px rgba(31,157,85,0.1); }
+    .cat-chip.management.off { background: linear-gradient(160deg, #f6f8fc 0%, #edf0f7 100%); color: #a0aabf; border-color: #dde3ef; box-shadow: none; }
+    .cat-chip.technology     { background: linear-gradient(160deg, #fff6ee 0%, #ffe5d0 100%); color: #c44a08; border-color: #f8b894; box-shadow: 0 2px 6px rgba(234,88,12,0.1); }
+    .cat-chip.technology.off { background: linear-gradient(160deg, #f6f8fc 0%, #edf0f7 100%); color: #a0aabf; border-color: #dde3ef; box-shadow: none; }
     .cat-dot {
       width: 8px;
       height: 8px;
@@ -298,18 +300,19 @@
     .btn-start-main:hover { box-shadow: 0 6px 20px rgba(45,91,219,0.45); transform: translateY(-1px); }
     .btn-start-sub {
       width: 100%;
-      border: 2px solid #d5dced;
+      border: none;
       border-radius: 14px;
       padding: 13px;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      background: #fff;
-      color: #3b5080;
+      background: linear-gradient(160deg, #f4f7ff 0%, #dce6ff 100%);
+      color: #2d4fa0;
+      box-shadow: 0 2px 8px rgba(45,91,219,0.12);
       transition: 0.18s ease;
       touch-action: manipulation;
     }
-    .btn-start-sub:hover { background: #f2f6ff; border-color: #2d5bdb; }
+    .btn-start-sub:hover { background: linear-gradient(160deg, #e8eeff 0%, #cdd9ff 100%); }
 
     /* ─── インストールバナー ─── */
     .install-banner {
@@ -441,12 +444,12 @@
     .choice-btn {
       width: 100%;
       text-align: left;
-      border: 2px solid #dfe5f0;
+      border: 1.5px solid #dfe5f0;
       border-radius: 12px;
       padding: 14px 16px;
       cursor: pointer;
       transition: 0.18s ease;
-      background: #fff;
+      background: linear-gradient(160deg, #ffffff 0%, #f4f7fd 100%);
       font-size: 16px;
       color: #222;
       min-height: 52px;
@@ -454,7 +457,7 @@
     }
     .choice-btn:hover:not(:disabled) {
       border-color: #7f9cf5;
-      background: #f6f8ff;
+      background: linear-gradient(160deg, #f4f7ff 0%, #e8eeff 100%);
     }
     .choice-btn:focus-visible,
     button:focus-visible,
@@ -465,12 +468,12 @@
     }
     .choice-btn.correct {
       border-color: #1f9d55;
-      background: #eaf8f0;
+      background: linear-gradient(160deg, #edfaf4 0%, #d0f0e0 100%);
       font-weight: 700;
     }
     .choice-btn.wrong {
       border-color: #d64545;
-      background: #fdeeee;
+      background: linear-gradient(160deg, #fff0f0 0%, #fcd8d8 100%);
       font-weight: 700;
     }
     .choice-btn:disabled {
@@ -495,30 +498,35 @@
       touch-action: manipulation;
     }
     .primary {
-      background: #2d5bdb;
+      background: linear-gradient(160deg, #5580f8 0%, #2249b0 100%);
       color: white;
+      box-shadow: 0 4px 12px rgba(45,91,219,0.3);
     }
-    .primary:hover { background: #2249b0; }
+    .primary:hover { background: linear-gradient(160deg, #4470e8 0%, #1a3b9a 100%); }
     .secondary {
-      background: #eef2f7;
-      color: #333;
+      background: linear-gradient(160deg, #f8faff 0%, #e2eaf6 100%);
+      color: #2e3f60;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-    .secondary:hover { background: #dde5ef; }
+    .secondary:hover { background: linear-gradient(160deg, #edf2fc 0%, #d4dff2 100%); }
     .danger {
-      background: #cc3d3d;
+      background: linear-gradient(160deg, #e85c5c 0%, #a92f2f 100%);
       color: white;
+      box-shadow: 0 4px 12px rgba(180,50,50,0.28);
     }
-    .danger:hover { background: #a92f2f; }
+    .danger:hover { background: linear-gradient(160deg, #d84c4c 0%, #8f2020 100%); }
     .success {
-      background: #1f9d55;
+      background: linear-gradient(160deg, #27b866 0%, #177742 100%);
       color: white;
+      box-shadow: 0 4px 12px rgba(31,157,85,0.28);
     }
-    .success:hover { background: #177742; }
+    .success:hover { background: linear-gradient(160deg, #1fa558 0%, #106030 100%); }
     .warning {
-      background: #c98a16;
+      background: linear-gradient(160deg, #e09a20 0%, #a46d0d 100%);
       color: white;
+      box-shadow: 0 4px 12px rgba(180,120,0,0.28);
     }
-    .warning:hover { background: #a46d0d; }
+    .warning:hover { background: linear-gradient(160deg, #cf8a10 0%, #8f5c00 100%); }
 
     .answer-box,
     .result-box,
@@ -616,17 +624,18 @@
       border-radius: 12px;
       padding: 12px 16px;
       cursor: pointer;
-      background: #fffbf0;
+      background: linear-gradient(160deg, #fffae8 0%, #fff0c0 100%);
       font-size: 15px;
       font-weight: 700;
-      color: #8a5c00;
+      color: #7a4e00;
       min-height: 48px;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       transition: 0.18s ease;
+      box-shadow: 0 2px 8px rgba(180,120,0,0.1);
     }
     .dont-know-btn:hover:not(:disabled) {
-      background: #fff3cd;
+      background: linear-gradient(160deg, #fff3cd 0%, #ffe89a 100%);
       border-color: #a46d0d;
     }
     .dont-know-btn:disabled {
